@@ -39,7 +39,7 @@ namespace Otome.UI
 
     
         void StartButtonPressed(){
-        
+            
         }
 
         void LoadButtonPressed(){

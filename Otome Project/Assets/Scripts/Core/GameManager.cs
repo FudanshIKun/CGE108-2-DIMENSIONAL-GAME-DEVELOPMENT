@@ -8,11 +8,12 @@ namespace Otome.Core
 {
     public class GameManager : MonoBehaviour
     {
+        #region Singleton
+
         public static GameManager Instance;
 
         private void Awake()
         {
-            //Singleton
             if (Instance == null)
             {
                 Instance = this;
@@ -24,6 +25,11 @@ namespace Otome.Core
             }
         }
 
+
+        #endregion
+
+        #region Scene Management
+
         public enum SceneList
         {
             MainMenu,
@@ -31,6 +37,8 @@ namespace Otome.Core
             Level01,
             Level02
         }
-        
+
+        #endregion
+
     }
 }
