@@ -13,7 +13,7 @@ namespace Otome.Core
         {
             if (Instance != null)
             {
-                Debug.Log("Detect more than one DataManager");
+                Debug.Log("Detect more than one DataManager!");
             }
 
             Instance = this;
@@ -28,7 +28,7 @@ namespace Otome.Core
         {
             if (this._gameData == null)
             {
-                Debug.Log("Detect gamedata was saveed. Initializing data to default.");
+                Debug.Log("Can't Detect any saved GameData. Initializing data to default.");
                 NewGame();
             }
         }

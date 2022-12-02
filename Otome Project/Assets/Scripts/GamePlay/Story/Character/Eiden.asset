@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2a9554ea5fa5534a8b3ef8443c9871c, type: 3}
+  m_Name: Eiden
+  m_EditorClassIdentifier: 
+  characterName: Eiden
+  textColor: {r: 0.65882355, g: 0.3647059, b: 1, a: 0}
+  normal: {fileID: 21300000, guid: 1d0b9a14bfa158e4cb7b463f6a7c3bb4, type: 3}
+  smile: {fileID: 21300000, guid: 8ad794858fe690f40ae175198174e40b, type: 3}
+  angry: {fileID: 21300000, guid: 3478f0d7967a65147a06fc0740cc9cca, type: 3}

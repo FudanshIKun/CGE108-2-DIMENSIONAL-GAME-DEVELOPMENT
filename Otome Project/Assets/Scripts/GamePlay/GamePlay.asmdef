@@ -1,3 +1,16 @@
 {
-	"name": "GamePlay"
+    "name": "GamePlay",
+    "rootNamespace": "Otome.GamePlay",
+    "references": [
+        "GUID:be900d9fb1beac547abeec72cc2eaf14"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }

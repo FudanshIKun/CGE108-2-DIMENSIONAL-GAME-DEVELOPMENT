@@ -40,5 +40,14 @@ namespace Otome.Core
 
         #endregion
 
+        #region GamePlay
+
+        public enum GameState
+        {
+            Playing,
+            Paused
+        }
+
+        #endregion
     }
 }
