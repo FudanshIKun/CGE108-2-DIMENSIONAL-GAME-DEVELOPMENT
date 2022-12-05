@@ -13,7 +13,8 @@ namespace Otome.GamePlay
         [System.Serializable]
         public struct Sentence
         {
-            public string text;
+            public string conversationText;
+            public bool haveChoice;
             public Character Character;
 
             public enum EmotionList

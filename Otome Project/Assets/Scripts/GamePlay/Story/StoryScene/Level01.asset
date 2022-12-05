@@ -13,7 +13,12 @@ MonoBehaviour:
   m_Name: Level01
   m_EditorClassIdentifier: 
   Sentences:
-  - text: Hey you!?
+  - conversationText: Hey you!
+    Character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
+    SpriteEmotion: 0
+    Place: {fileID: 2800000, guid: 7b45cf01170e49047acd82dcffd2b5c5, type: 3}
+    Soundfx: {fileID: 0}
+  - conversationText: What are you doing in here!?
     Character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
     SpriteEmotion: 0
     Place: {fileID: 2800000, guid: 7b45cf01170e49047acd82dcffd2b5c5, type: 3}

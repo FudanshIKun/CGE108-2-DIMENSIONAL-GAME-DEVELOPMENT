@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Eiden
   m_EditorClassIdentifier: 
   characterName: Eiden
-  textColor: {r: 0.65882355, g: 0.3647059, b: 1, a: 0}
+  characterColor: {r: 0.805692, g: 0.3915094, b: 1, a: 1}
   normal: {fileID: 21300000, guid: 1d0b9a14bfa158e4cb7b463f6a7c3bb4, type: 3}
   smile: {fileID: 21300000, guid: 8ad794858fe690f40ae175198174e40b, type: 3}
   angry: {fileID: 21300000, guid: 3478f0d7967a65147a06fc0740cc9cca, type: 3}

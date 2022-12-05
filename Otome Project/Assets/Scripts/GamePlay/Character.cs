@@ -9,7 +9,7 @@ namespace Otome.GamePlay
     public class Character : ScriptableObject
     {
         public string characterName;
-        public Color textColor;
+        public Color characterColor;
         [Space(10)] 
         [Header("Sprite List")] 
         public Sprite normal;

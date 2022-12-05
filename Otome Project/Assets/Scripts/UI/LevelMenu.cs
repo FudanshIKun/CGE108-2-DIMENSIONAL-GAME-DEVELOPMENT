@@ -12,10 +12,5 @@ namespace Otome.UI
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
         }
-
-        void Update()
-        {
-        
-        }
     }
 }

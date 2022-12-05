@@ -3,24 +3,26 @@
   <component name="ChangeListManager">
     <list default="true" id="f2bfc7d5-8c76-4557-86b6-7480a7c33296" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Otome Project/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Otome Project/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Resources/SoundFX.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level01.unity" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level01.unity.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level02.unity" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Level02.unity.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/LevelMenu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/LevelMenu.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Levels/Level01.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Levels/Level01.unity" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scenes/MainMenu.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/MainMenu.unity" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Core/DataManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Core/DataManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlay.asmdef" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlay.asmdef" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GamePlayUI.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/GamePlayUI.cs.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Character.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Character.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayManager.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayManager.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayManager.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayUI.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayUI.cs.meta" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayUI.cs.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Story/Character/Eiden.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Story/Character/Eiden.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Story/StoryScene/Level01.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Story/StoryScene/Level01.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/StoryScene.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/StoryScene.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/LevelMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/LevelMenu.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Prototype Design.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/UI Template/GamePlayTemplate.uxml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UI Template/GamePlayTemplate.uxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/UI Template/MainMenuTemplate.uxml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UI Template/MainMenuTemplate.uxml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/UI Toolkit/PanelSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UI Toolkit/PanelSettings.asset" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/MainMenu.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI Template.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI Template/GamePlayTemplate.uxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI Template/GamePlayTemplate.uxml.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI Template/LevelMenuTemplate.uxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI Template/LevelMenuTemplate.uxml.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI Template/MainMenuTemplate.uxml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/UI Template/MainMenuTemplate.uxml.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,16 +46,16 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Discover.Launch.Via.Unity": "true",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "settings.editor.selected.configurable": "preferences.general",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Discover.Launch.Via.Unity&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.general&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected="Attach to Unity Editor.Attach to Unity Editor">
     <configuration name="UnitTests (batch mode)" type="RunUnityExe" factoryName="Unity Executable">
       <option name="EXE_PATH" value="D:\UnityEditers\2022.1.22f1\Editor\Unity.exe" />
@@ -97,6 +99,10 @@
       <workItem from="1669960626399" duration="6402000" />
       <workItem from="1669973842071" duration="1286000" />
       <workItem from="1669992204075" duration="8291000" />
+      <workItem from="1670033636805" duration="1190000" />
+      <workItem from="1670070397340" duration="645000" />
+      <workItem from="1670126691934" duration="19171000" />
+      <workItem from="1670217801501" duration="24066000" />
     </task>
     <servers />
   </component>

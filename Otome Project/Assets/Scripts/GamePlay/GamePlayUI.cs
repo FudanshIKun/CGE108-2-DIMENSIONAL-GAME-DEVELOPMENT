@@ -1,3 +1,6 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
@@ -6,19 +9,27 @@ namespace Otome.GamePlay
 {
     public class GamePlayUI : MonoBehaviour
     {
-        public Sprite Test;
+        [Header("UI Setting")] 
+        private GamePlayManager _gamePlayManager;
+        [Range(1f,2f)]
+        [SerializeField] float fadeDuration;
+        [Range(1f, 2f)] 
+        [SerializeField] float fadeDelay;
+        private BottomBarState _barState = BottomBarState.hiding;
+        [HideInInspector]
+        public TypingState typingState = TypingState.Compleated;
+        
         public VisualElement root;
         
         #region UI Management
-        
-        private Button pauseButton;        
+
+        Button pauseButton;        
         
         #endregion
                 
         #region Background Management
         
         private int currentBG = 1;
-        
         private VisualElement bg01;
         private VisualElement bg02;
         
@@ -57,33 +68,100 @@ namespace Otome.GamePlay
         #endregion
         
         #region BottomBar Management
-                
-        public enum ConversationState
+        
+        public enum TypingState
         { 
             Playing,
             Compleated
         }
-        
-        private GroupBox bottomBar;
-        private VisualElement bar;
-        private VisualElement circle;
-        private Label conversationText;
-        private Label personNameText;
 
-        // private IEnumerator ShowBottomBar() // *** Using in GamePlayManager ***
-        // {
-          
-        // }
-                
-        // private IEnumerator HideBottomBar() // *** Using in GamePlayManager ***
-        // {
-            
-        // }
-        
-        // private IEnumerator TypeText(string text) // *** Using in GamePlayManager ***
-        // {
-           
-        // }
+        VisualElement bottomBar;
+        VisualElement bar;
+        VisualElement circle;
+        Label conversationText;
+        VisualElement personNameBar;
+        Label personNameText;
+        List<VisualElement> BottomBarElement;
+
+        public enum BottomBarState
+        {
+            Showing,
+            hiding
+        }
+
+        public IEnumerator FadeShowBottomBar() 
+        {
+            if (_barState == BottomBarState.Showing)
+            {
+                yield break;
+            }
+
+            conversationText.text = "";
+            bottomBar.style.display = DisplayStyle.Flex;
+            float timeElapsed = 0;
+            float opacity;
+            while (timeElapsed < fadeDuration)
+            {
+                opacity = Mathf.Lerp(0, 1, timeElapsed / fadeDuration);
+                timeElapsed += Time.deltaTime;
+                bottomBar.style.opacity = opacity;
+                if (bottomBar.style.opacity == 1) { _barState = BottomBarState.Showing; }
+                yield return null;
+            }
+            if (_barState == BottomBarState.hiding)
+            {
+                bottomBar.style.opacity = 1;
+                _barState = BottomBarState.Showing;
+            }
+        }
+        public IEnumerator FadeHideBottomBar() 
+        {
+            yield return new WaitForSeconds(fadeDelay);
+            if (_barState == BottomBarState.hiding)
+            {
+                yield break;
+            }
+            float timeElapsed = 0;
+            float opacity;
+            while (timeElapsed < fadeDuration)
+            {
+                opacity = Mathf.Lerp(1, 0, timeElapsed / fadeDuration);
+                timeElapsed += Time.deltaTime;
+                bottomBar.style.opacity = opacity;
+                if (bottomBar.style.opacity == 0) { _barState = BottomBarState.hiding; }
+                yield return null;
+            }
+            if (_barState == BottomBarState.Showing)
+            {
+                bottomBar.style.opacity = 0;
+                _barState = BottomBarState.hiding;
+            }
+            bottomBar.style.display = DisplayStyle.None;
+        }
+        public void ChangeSpeaker(string name, Color speakerColor) // *** Using in GamePlayManager ***
+        {
+            personNameText.text = name;
+            personNameBar.style.unityBackgroundImageTintColor = speakerColor;
+            conversationText.style.color = speakerColor;
+            circle.style.unityBackgroundImageTintColor = speakerColor;
+        }
+
+        public IEnumerator TypeText(string text)
+        {
+            conversationText.text = "";
+            typingState = TypingState.Playing;
+            int wordIndex = 0;
+            while (typingState != TypingState.Compleated)
+            {
+                conversationText.text += text[wordIndex];
+                yield return new WaitForSeconds(0.08f);
+                if (++wordIndex == text.Length)
+                {
+                    typingState = TypingState.Compleated;
+                    break;
+                }
+            }
+        }
         
         #endregion
         
@@ -98,21 +176,49 @@ namespace Otome.GamePlay
         
         #endregion
         
-        void AddFunctionUI()
+        void PausedPressed()
         {
             
         }
+
+        void PreparedUI()
+        {
+            _barState = BottomBarState.hiding;
+            bottomBar.style.opacity = 0;
+            bottomBar.style.display = DisplayStyle.None;
+            typingState = TypingState.Compleated;
+            
+        }
+        void AddFunctionUI()
+        {
+            _gamePlayManager = FindObjectOfType<GamePlayManager>();
+            pauseButton.clicked += PausedPressed;
+            bg01.AddManipulator(new Clickable(evt => StartCoroutine(_gamePlayManager.PlayNextSentence())));
+            bg02.AddManipulator(new Clickable(evt => StartCoroutine(_gamePlayManager.PlayNextSentence())));
+            bottomBar.AddManipulator(new Clickable(evt => StartCoroutine(_gamePlayManager.PlayNextSentence())));
+        }
+        
         void Start()
         {
             var root = GetComponent<UIDocument>().rootVisualElement;
             bg01 = root.Q<VisualElement>("Background01");
             bg02 = root.Q<VisualElement>("Background02");
-            bottomBar = root.Q<GroupBox>("BottomBar");
-            bar = bottomBar.ElementAt(0);
-            circle = bottomBar.ElementAt(1);
+            bottomBar = root.Q<VisualElement>("BottomBar");
+            bar = root.Q<VisualElement>("Bar");
+            circle = root.Q<VisualElement>("Circle");
+            personNameBar = root.Q<VisualElement>("NameBar");
+            personNameText = root.Q<Label>("PersonNameText");
             conversationText = root.Q<Label>("ConversationText");
             pauseButton = root.Q<Button>("PauseButton");
             CharacterSprite = root.Q<VisualElement>("Character");
+            
+            PreparedUI();
+            AddFunctionUI();
+        }
+
+        private void OnValidate()
+        {
+            
         }
     }
 }
