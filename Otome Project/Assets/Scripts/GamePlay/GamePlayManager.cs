@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using UnityEngine;
 using Otome.UI;
+using UnityEngine.UIElements;
 
 namespace Otome.GamePlay
 {
@@ -33,53 +34,99 @@ namespace Otome.GamePlay
 
         private GamePlayUI mainUI;
 
+        void ChangeEmotion(Character character,StoryScene.Sentence.EmotionList emotion)
+        {
+            switch (emotion)
+            {
+                case StoryScene.Sentence.EmotionList.normal :
+                    mainUI.ChangeSprite(character.normal);
+                    break;
+                case StoryScene.Sentence.EmotionList.smile :
+                    mainUI.ChangeSprite(character.smile);
+                    break;
+                case StoryScene.Sentence.EmotionList.Angry :
+                    mainUI.ChangeSprite(character.angry);
+                    break;
+            }
+        }
+        
         #endregion
 
         #region Story Management
 
         [SerializeField] StoryScene currentSceneStory;
         int sentenceIndex = -1;
-        private State state = State.COMPLEATED;
-        
-        private enum State
+        private enum ConversationState
         {
             PLAYING, COMPLEATED
         }
+        private ConversationState conversationState = ConversationState.COMPLEATED;
+        private Texture2D currenntPlace;
 
         public IEnumerator PlayNextSentence()
         {
-            if (state == State.PLAYING)
+            if (conversationState == ConversationState.PLAYING)
             {
                 yield break;
             }
-            state = State.PLAYING;
-            if (++sentenceIndex >= currentSceneStory.Sentences.Count)
+            conversationState = ConversationState.PLAYING;
+            if (sentenceIndex + 1 >= currentSceneStory.Sentences.Count)
             {
                 yield break;
             }
-            StartCoroutine(mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
-            mainUI.ChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].Character.characterName, currentSceneStory.Sentences[sentenceIndex].Character.characterColor);
+
+            if (currentSceneStory.Sentences[++sentenceIndex].Place != currenntPlace)
+            {
+                yield return StartCoroutine(mainUI.SwitchBackgroundWithoutFade(currentSceneStory.Sentences[sentenceIndex].Place));
+                currenntPlace = currentSceneStory.Sentences[sentenceIndex].Place;
+                StartCoroutine(mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                mainUI.ChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, currentSceneStory.Sentences[sentenceIndex].character.characterColor);
+                ChangeEmotion(currentSceneStory.Sentences[sentenceIndex].character,currentSceneStory.Sentences[sentenceIndex].SpriteEmotion);
+            }
+            else
+            {
+                StartCoroutine(mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                mainUI.ChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, currentSceneStory.Sentences[sentenceIndex].character.characterColor);
+                ChangeEmotion(currentSceneStory.Sentences[sentenceIndex].character,currentSceneStory.Sentences[sentenceIndex].SpriteEmotion);
+            }
+
             while (mainUI.typingState == GamePlayUI.TypingState.Playing)
             {
                 yield return null;
             }
 
             yield return new WaitForSeconds(NextConversationDelay);
-            state = State.COMPLEATED;
+            conversationState = ConversationState.COMPLEATED;
         }
         
         private IEnumerator StartStage(StoryScene story)
         {
-            mainUI.ChangeSpeaker(currentSceneStory.Sentences[0].Character.characterName, currentSceneStory.Sentences[0].Character.characterColor);
+            currenntPlace = currentSceneStory.Sentences[0].Place;
+            mainUI.ChangeSpeaker(currentSceneStory.Sentences[0].character.characterName, currentSceneStory.Sentences[0].character.characterColor);
             sentenceIndex = -1;
+            yield return StartCoroutine(mainUI.FadeShowSprite());
             yield return StartCoroutine(mainUI.FadeShowBottomBar());
             StartCoroutine(PlayNextSentence());
         }
+
+        //private IEnumerator EndStage(StoryScene story)
+        //{
+            
+        //}
         
         #endregion
 
         #region GamePlayManagement
-        
+
+        public bool isPaused;
+
+        public enum GamePlayState
+        {
+            PLAYING,
+            ENDED
+        }
+        [HideInInspector]
+        public GamePlayState gameState = GamePlayState.PLAYING;
 
         #endregion
         

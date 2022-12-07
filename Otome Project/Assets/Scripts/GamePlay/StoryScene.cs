@@ -14,8 +14,15 @@ namespace Otome.GamePlay
         public struct Sentence
         {
             public string conversationText;
-            public bool haveChoice;
-            public Character Character;
+
+            public enum SentenceType
+            {
+                NormalConversation,
+                Question
+            }
+            public SentenceType sentenceType;
+
+            public Character character;
 
             public enum EmotionList
             {
