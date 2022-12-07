@@ -7,12 +7,15 @@ namespace Otome.GamePlay
     [System.Serializable]
     public class StoryScene : ScriptableObject
     {
-        public List<Sentence> Sentences;
+        public AudioClip mainBG;
         public StoryScene nextScene;
+        public List<Sentence> Sentences;
 
         [System.Serializable]
         public struct Sentence
         {
+            #region Conversation Info
+
             public string conversationText;
 
             public enum SentenceType
@@ -21,6 +24,10 @@ namespace Otome.GamePlay
                 Question
             }
             public SentenceType sentenceType;
+
+            #endregion
+
+            #region Character Info
 
             public Character character;
 
@@ -38,16 +45,27 @@ namespace Otome.GamePlay
                 angry
             }
             public EmotionList SpriteEmotion;
-            public Texture2D Place;
 
+            #endregion
+
+            #region Background Info
+
+            public Texture2D Place;
             public enum BGTransitionType
             {
-                normal,
-                Fade
+                BGnormal_CharacterNormal,
+                BGnormal_CharacterFade,
+                BGFade_CharacterNormal
             }
             public BGTransitionType bgTransitionType;
-            
-            public AudioClip Soundfx;
+
+            #endregion
+
+            #region Sounds Info
+
+            public AudioClip conversationSFX;
+
+            #endregion
 
         }
     }

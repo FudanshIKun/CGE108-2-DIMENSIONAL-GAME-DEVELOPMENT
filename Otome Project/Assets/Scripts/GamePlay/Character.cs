@@ -8,8 +8,16 @@ namespace Otome.GamePlay
     [System.Serializable]
     public class Character : ScriptableObject
     {
+        [Header("General Info")]
         public string characterName;
+        public enum GenderList
+        {
+            Male,Female,
+            Bisexual
+        }
+        public GenderList characterGender;
         public Color characterColor;
+        
         [Space(10)] 
         [Header("Sprite List")] 
         public Sprite normal;

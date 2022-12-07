@@ -71,7 +71,7 @@ namespace Otome.GamePlay
             float opacity;
             switch (transitionType)
             {
-                case StoryScene.Sentence.BGTransitionType.normal :
+                case StoryScene.Sentence.BGTransitionType.BGnormal_CharacterNormal :
                     if (currentBG == bg01)
                     {
                         Debug.Log("Change currentBG to bg02");
@@ -108,8 +108,10 @@ namespace Otome.GamePlay
                         bg02.style.display = DisplayStyle.None;
                         currentBG = bg01;
                     }
+                    break; 
+                case StoryScene.Sentence.BGTransitionType.BGnormal_CharacterFade :
                     break;
-                case StoryScene.Sentence.BGTransitionType.Fade :
+                case StoryScene.Sentence.BGTransitionType.BGFade_CharacterNormal :
                     break;
                     
             }
@@ -249,6 +251,7 @@ namespace Otome.GamePlay
 
         public IEnumerator TypeText(string text)
         {
+            yield return new WaitForSeconds(0.5f);
             conversationText.text = "";
             typingState = TypingState.Playing;
             int wordIndex = 0;
@@ -359,11 +362,13 @@ namespace Otome.GamePlay
 
         public IEnumerator FadeShowSprite()
         {
+            // check if the sprite are already in show state;
             if (spriteState == SpriteState.Showing)
             {
                 yield break;
             }
-
+            
+            // fade the sprite opacity to 1;
             characterSprite.style.display = DisplayStyle.Flex;
             float timeElapsed = 0;
             float opacity;
@@ -375,6 +380,8 @@ namespace Otome.GamePlay
                 if (characterSprite.style.opacity == 0) { spriteState = SpriteState.Showing; }
                 yield return null;
             }
+            
+            // check if the sprite hasn't compleate show up yet then make it compleately show;
             if (spriteState == SpriteState.Hiding)
             {
                 characterSprite.style.opacity = 0;
@@ -384,10 +391,13 @@ namespace Otome.GamePlay
 
         public IEnumerator FadeHideSprite()
         {
+            // check if the sprite are already in hide state;
             if (spriteState == SpriteState.Hiding)
             {
                 yield break;
             }
+            
+            // fade the sprite opacity to 0;
             float timeElapsed = 0;
             float opacity;
             while (timeElapsed < spriteFadeDuration)
@@ -398,6 +408,8 @@ namespace Otome.GamePlay
                 if (characterSprite.style.opacity == 0) { spriteState = SpriteState.Hiding; }
                 yield return null;
             }
+            
+            // check if the sprite hasn't compleate dissapear yet then make it compleately gone;
             if (spriteState == SpriteState.Showing)
             {
                 characterSprite.style.opacity = 0;
@@ -458,11 +470,6 @@ namespace Otome.GamePlay
         }
 
         void Update()
-        {
-            Debug.Log(spriteState);
-        }
-
-        private void OnValidate()
         {
             
         }

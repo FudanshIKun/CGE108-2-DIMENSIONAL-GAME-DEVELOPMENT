@@ -22,9 +22,9 @@ namespace Otome.UI
             FillBar
         }
         
-        public void LoadScene()
-        {
+        //public IEnumerator LoadScene(LoadSceneTransitionType transitionType)
+        //{
             
-        }
+        //}
     }
 }

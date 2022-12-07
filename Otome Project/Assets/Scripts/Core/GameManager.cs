@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -37,17 +38,49 @@ namespace Otome.Core
             Level01,
             Level02
         }
+        public SceneList currentScene;
 
-        #endregion
-
-        #region GamePlay
-
-        public enum GameState
+        public void LoadScene(SceneList targetScene)
         {
-            Playing,
-            Paused
+            gameState = GameState.Loading;
         }
 
         #endregion
+
+        #region Overview of Game system
+
+        public enum GameState
+        {
+            InMenu,
+            Loading,
+            InGame
+        }
+        public GameState gameState;
+
+        #endregion
+
+        void Start()
+        {
+            switch (SceneManager.GetActiveScene().ToString())
+            {
+                case var value when value == SceneList.MainMenu.ToString() :
+                    gameState = GameState.InMenu;
+                    break;
+                case var value when value == SceneList.LevelMenu.ToString() :
+                    gameState = GameState.InMenu;
+                    break;
+                case var value when value == SceneList.Level01.ToString() :
+                    gameState = GameState.InGame;
+                    break;
+                case var value when value == SceneList.Level02.ToString() :
+                    gameState = GameState.InGame;
+                    break;
+            }
+        }
+
+        void Update()
+        {
+            Debug.Log(gameState);
+        }
     }
 }

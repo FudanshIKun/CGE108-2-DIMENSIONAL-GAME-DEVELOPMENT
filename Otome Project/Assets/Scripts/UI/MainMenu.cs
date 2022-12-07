@@ -21,7 +21,7 @@ namespace Otome.UI
             _ui.SwitchPanel(MainMenuElements, NewGameElement);
         }
         void LoadButtonPressed(){
-            _ui.LoadScene();
+            //_ui.LoadScene();
         }
         void OptionButtonPressed(){
             _ui.SwitchPanel(MainMenuElements, OptionElement);

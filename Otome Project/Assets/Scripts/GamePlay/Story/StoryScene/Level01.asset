@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: dc1bdf5b22935c140b42c3fcaceaf986, type: 3}
   m_Name: Level01
   m_EditorClassIdentifier: 
+  mainBG: {fileID: 8300000, guid: 429281f7965357b4b9601cf3aa705906, type: 3}
+  nextScene: {fileID: 0}
   Sentences:
   - conversationText: Hey, How are you?
     sentenceType: 0
@@ -20,7 +22,7 @@ MonoBehaviour:
     SpriteEmotion: 1
     Place: {fileID: 2800000, guid: 7b45cf01170e49047acd82dcffd2b5c5, type: 3}
     bgTransitionType: 0
-    Soundfx: {fileID: 0}
+    conversationSFX: {fileID: 0}
   - conversationText: What are you doing in here!?
     sentenceType: 0
     character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
@@ -28,7 +30,7 @@ MonoBehaviour:
     SpriteEmotion: 2
     Place: {fileID: 2800000, guid: 06012c9647f81f448a663b3461bb5b21, type: 3}
     bgTransitionType: 0
-    Soundfx: {fileID: 0}
+    conversationSFX: {fileID: 0}
   - conversationText: Hey, We meet again!
     sentenceType: 0
     character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
@@ -36,7 +38,7 @@ MonoBehaviour:
     SpriteEmotion: 1
     Place: {fileID: 2800000, guid: 7b45cf01170e49047acd82dcffd2b5c5, type: 3}
     bgTransitionType: 0
-    Soundfx: {fileID: 0}
+    conversationSFX: {fileID: 0}
   - conversationText: It's too late! We are not gonna make it!
     sentenceType: 0
     character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
@@ -44,7 +46,7 @@ MonoBehaviour:
     SpriteEmotion: 2
     Place: {fileID: 2800000, guid: 73dc6a517cdf1bf448b92ec96ba5a686, type: 3}
     bgTransitionType: 0
-    Soundfx: {fileID: 0}
+    conversationSFX: {fileID: 0}
   - conversationText: Wow! We made it!
     sentenceType: 0
     character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
@@ -52,5 +54,4 @@ MonoBehaviour:
     SpriteEmotion: 1
     Place: {fileID: 2800000, guid: ade82cc55f17d734380af294c823f19d, type: 3}
     bgTransitionType: 0
-    Soundfx: {fileID: 0}
-  nextScene: {fileID: 0}
+    conversationSFX: {fileID: 0}

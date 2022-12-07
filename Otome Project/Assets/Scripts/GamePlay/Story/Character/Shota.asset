@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Shota
   m_EditorClassIdentifier: 
   characterName: Shota
-  characterColor: {r: 0.2971698, g: 0.407664, b: 1, a: 1}
+  characterColor: {r: 1, g: 0.42310205, b: 0.3537736, a: 1}
   normal: {fileID: 21300000, guid: 3c0741783361cd148b9c546f9076c125, type: 3}
   smile: {fileID: 21300000, guid: 824b26621ab5b4d458c7a9de8ffc4e73, type: 3}
   angry: {fileID: 21300000, guid: a3659a4eaeebf6145ba6bfd4f4db566a, type: 3}
