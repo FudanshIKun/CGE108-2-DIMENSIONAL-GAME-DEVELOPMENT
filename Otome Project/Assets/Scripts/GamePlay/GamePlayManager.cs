@@ -26,29 +26,22 @@ namespace Otome.GamePlay
 
         #endregion
 
-        [Header("Setting")] 
-        [Range(1f, 2f)] 
+        [Header("Story Setting")] 
+        [Range(0f, 1f)] 
         [SerializeField] float NextConversationDelay;
+        [Space(5)]
+        [Header("Audio Setting")]
+        public AudioSource bgSpeaker;
+        public AudioSource sfxSpeaker;
+        [Space(5)]
+        [Header("GamePlay Setting")]
+        public GamePlayState gameState = GamePlayState.PLAYING;
+        [HideInInspector]
+        public bool isPaused;
         
         #region UI management
 
         private GamePlayUI mainUI;
-
-        void ChangeEmotion(Character character,StoryScene.Sentence.EmotionList emotion)
-        {
-            switch (emotion)
-            {
-                case StoryScene.Sentence.EmotionList.normal :
-                    mainUI.ChangeSprite(character.normal);
-                    break;
-                case StoryScene.Sentence.EmotionList.smile :
-                    mainUI.ChangeSprite(character.smile);
-                    break;
-                case StoryScene.Sentence.EmotionList.Angry :
-                    mainUI.ChangeSprite(character.angry);
-                    break;
-            }
-        }
         
         #endregion
 
@@ -77,24 +70,27 @@ namespace Otome.GamePlay
 
             if (currentSceneStory.Sentences[++sentenceIndex].Place != currenntPlace)
             {
-                yield return StartCoroutine(mainUI.SwitchBackgroundWithoutFade(currentSceneStory.Sentences[sentenceIndex].Place));
-                currenntPlace = currentSceneStory.Sentences[sentenceIndex].Place;
+                StartCoroutine(mainUI.SwitchBackground(currentSceneStory.Sentences[sentenceIndex].Place, currentSceneStory.Sentences[sentenceIndex].bgTransitionType));
+                yield return StartCoroutine(mainUI.ChangeSprite(currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,currentSceneStory.Sentences[sentenceIndex].character,
+                    currentSceneStory.Sentences[sentenceIndex].characterTransitionType));
+                currenntPlace = currentSceneStory.Sentences[sentenceIndex].Place; 
                 StartCoroutine(mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
-                mainUI.ChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, currentSceneStory.Sentences[sentenceIndex].character.characterColor);
-                ChangeEmotion(currentSceneStory.Sentences[sentenceIndex].character,currentSceneStory.Sentences[sentenceIndex].SpriteEmotion);
+                StartCoroutine( mainUI.FadeChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, 
+                    currentSceneStory.Sentences[sentenceIndex].character.characterColor));
             }
             else
             {
+                
                 StartCoroutine(mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
-                mainUI.ChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, currentSceneStory.Sentences[sentenceIndex].character.characterColor);
-                ChangeEmotion(currentSceneStory.Sentences[sentenceIndex].character,currentSceneStory.Sentences[sentenceIndex].SpriteEmotion);
+                mainUI.FadeChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, currentSceneStory.Sentences[sentenceIndex].character.characterColor);
+                StartCoroutine(mainUI.ChangeSprite(currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,currentSceneStory.Sentences[sentenceIndex].character,
+                    currentSceneStory.Sentences[sentenceIndex].characterTransitionType));
             }
 
             while (mainUI.typingState == GamePlayUI.TypingState.Playing)
             {
                 yield return null;
             }
-
             yield return new WaitForSeconds(NextConversationDelay);
             conversationState = ConversationState.COMPLEATED;
         }
@@ -103,6 +99,8 @@ namespace Otome.GamePlay
         {
             currenntPlace = currentSceneStory.Sentences[0].Place;
             mainUI.ChangeSpeaker(currentSceneStory.Sentences[0].character.characterName, currentSceneStory.Sentences[0].character.characterColor);
+            StartCoroutine(mainUI.ChangeSprite(currentSceneStory.Sentences[0].SpriteEmotion,currentSceneStory.Sentences[0].character , 
+                currentSceneStory.Sentences[0].characterTransitionType));
             sentenceIndex = -1;
             yield return StartCoroutine(mainUI.FadeShowSprite());
             yield return StartCoroutine(mainUI.FadeShowBottomBar());
@@ -118,15 +116,11 @@ namespace Otome.GamePlay
 
         #region GamePlayManagement
 
-        public bool isPaused;
-
         public enum GamePlayState
         {
             PLAYING,
             ENDED
         }
-        [HideInInspector]
-        public GamePlayState gameState = GamePlayState.PLAYING;
 
         #endregion
         

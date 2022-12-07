@@ -16,31 +16,41 @@ MonoBehaviour:
   - conversationText: Hey, How are you?
     sentenceType: 0
     character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
+    characterTransitionType: 0
     SpriteEmotion: 1
     Place: {fileID: 2800000, guid: 7b45cf01170e49047acd82dcffd2b5c5, type: 3}
+    bgTransitionType: 0
     Soundfx: {fileID: 0}
   - conversationText: What are you doing in here!?
     sentenceType: 0
     character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
+    characterTransitionType: 0
     SpriteEmotion: 2
     Place: {fileID: 2800000, guid: 06012c9647f81f448a663b3461bb5b21, type: 3}
+    bgTransitionType: 0
     Soundfx: {fileID: 0}
   - conversationText: Hey, We meet again!
     sentenceType: 0
-    character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
+    character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
+    characterTransitionType: 1
     SpriteEmotion: 1
     Place: {fileID: 2800000, guid: 7b45cf01170e49047acd82dcffd2b5c5, type: 3}
+    bgTransitionType: 0
     Soundfx: {fileID: 0}
-  - conversationText: It's too late! We can't do anything!
+  - conversationText: It's too late! We are not gonna make it!
     sentenceType: 0
-    character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
+    character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
+    characterTransitionType: 0
     SpriteEmotion: 2
     Place: {fileID: 2800000, guid: 73dc6a517cdf1bf448b92ec96ba5a686, type: 3}
+    bgTransitionType: 0
     Soundfx: {fileID: 0}
   - conversationText: Wow! We made it!
     sentenceType: 0
-    character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
+    character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
+    characterTransitionType: 0
     SpriteEmotion: 1
     Place: {fileID: 2800000, guid: ade82cc55f17d734380af294c823f19d, type: 3}
+    bgTransitionType: 0
     Soundfx: {fileID: 0}
   nextScene: {fileID: 0}

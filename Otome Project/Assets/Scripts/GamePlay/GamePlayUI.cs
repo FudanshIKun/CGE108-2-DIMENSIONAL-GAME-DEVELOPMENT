@@ -11,14 +11,18 @@ namespace Otome.GamePlay
     {
         [Header("UI Setting")] 
         private GamePlayManager _gamePlayManager;
-        [Range(1f,2f)]
+        [Range(1f,1.5f)]
         [SerializeField] float bottombarFadeDuration;
-        [Range(1f, 2f)] 
+        [Range(0.1f, 1.5f)] 
         [SerializeField] float fadeDelay;
-        [Range(1f, 2f)] 
+        [Range(0.5f, 1.5f)] 
         [SerializeField] float spriteFadeDuration;
-        [Range(1f, 2f)] 
+        [Range(0.5f, 1.5f)] 
         [SerializeField] float backgroundFadeDuration;
+        [Range(0.1f, 1f)]
+        [SerializeField] float speakerFadeDuration;
+        [Range(0.1f, 1f)] 
+        [SerializeField] private float changeSpeakerColorDuration;
         private BottomBarState _barState = BottomBarState.Hiding;
         [HideInInspector]
         public TypingState typingState = TypingState.Compleated;
@@ -61,46 +65,53 @@ namespace Otome.GamePlay
 
         VisualElement currentBG;
         
-        public IEnumerator SwitchBackgroundWithoutFade(Texture2D newBG) // *** Using in GamePlayManager ***
+        public IEnumerator SwitchBackground(Texture2D newBG, StoryScene.Sentence.BGTransitionType transitionType) // *** Using in GamePlayManager ***
         {
             float timeElapsed = 0;
             float opacity;
-            switch (currentBG)
+            switch (transitionType)
             {
-                case var value when value == bg01 :
-                    Debug.Log("Change currentBG to bg02");
-                    bg02.style.backgroundImage = new StyleBackground(newBG);
-                    bg01.BringToFront();
-                    bg02.style.opacity = 1;
-                    bg02.style.display = DisplayStyle.Flex;
-                    timeElapsed = 0;
-                    while (timeElapsed < backgroundFadeDuration)
+                case StoryScene.Sentence.BGTransitionType.normal :
+                    if (currentBG == bg01)
                     {
-                        opacity = Mathf.Lerp(1, 0, timeElapsed / backgroundFadeDuration);
-                        timeElapsed += Time.deltaTime;
-                        bg01.style.opacity = opacity;
-                        yield return null;
+                        Debug.Log("Change currentBG to bg02");
+                        bg02.style.backgroundImage = new StyleBackground(newBG);
+                        bg01.BringToFront();
+                        bg02.style.opacity = 1;
+                        bg02.style.display = DisplayStyle.Flex;
+                        timeElapsed = 0;
+                        while (timeElapsed < backgroundFadeDuration)
+                        {
+                            opacity = Mathf.Lerp(1, 0, timeElapsed / backgroundFadeDuration);
+                            timeElapsed += Time.deltaTime;
+                            bg01.style.opacity = opacity;
+                            yield return null;
+                        }
+                        bg01.style.display = DisplayStyle.None;
+                        currentBG = bg02;
                     }
-                    bg01.style.display = DisplayStyle.None;
-                    currentBG = bg02;
-                    break;
-                case var value when value == bg02 :
-                    Debug.Log("Change currentBG to bg01");
-                    bg01.style.backgroundImage = new StyleBackground(newBG);
-                    bg02.BringToFront();
-                    bg01.style.opacity = 1;
-                    bg01.style.display = DisplayStyle.Flex;
-                    timeElapsed = 0;
-                    while (timeElapsed < backgroundFadeDuration)
+                    else if (currentBG == bg02)
                     {
-                        opacity = Mathf.Lerp(1, 0, timeElapsed / backgroundFadeDuration);
-                        timeElapsed += Time.deltaTime;
-                        bg02.style.opacity = opacity;
-                        yield return null;
+                        Debug.Log("Change currentBG to bg01");
+                        bg01.style.backgroundImage = new StyleBackground(newBG);
+                        bg02.BringToFront();
+                        bg01.style.opacity = 1;
+                        bg01.style.display = DisplayStyle.Flex;
+                        timeElapsed = 0;
+                        while (timeElapsed < backgroundFadeDuration)
+                        {
+                            opacity = Mathf.Lerp(1, 0, timeElapsed / backgroundFadeDuration);
+                            timeElapsed += Time.deltaTime;
+                            bg02.style.opacity = opacity;
+                            yield return null;
+                        }
+                        bg02.style.display = DisplayStyle.None;
+                        currentBG = bg01;
                     }
-                    bg02.style.display = DisplayStyle.None;
-                    currentBG = bg01;
                     break;
+                case StoryScene.Sentence.BGTransitionType.Fade :
+                    break;
+                    
             }
         }
         
@@ -155,7 +166,6 @@ namespace Otome.GamePlay
         }
         public IEnumerator FadeHideBottomBar() 
         {
-            yield return new WaitForSeconds(fadeDelay);
             if (_barState == BottomBarState.Hiding)
             {
                 yield break;
@@ -177,17 +187,64 @@ namespace Otome.GamePlay
             }
             bottomBar.style.display = DisplayStyle.None;
         }
-
-        public void ChangeSpeaker(string name, Color speakerColor) // *** Using in GamePlayManager ***
+        
+        public void ChangeSpeaker(string name, Color speakerColor)
         {
-            personNameText.text = name;
+            circle.style.unityBackgroundImageTintColor = speakerColor;
             personNameBar.style.unityBackgroundImageTintColor = speakerColor;
-            conversationText.style.color = speakerColor;
             bar.style.borderTopColor = speakerColor;
             bar.style.borderBottomColor = speakerColor;
             bar.style.borderLeftColor = speakerColor;
             bar.style.borderRightColor = speakerColor;
-            circle.style.unityBackgroundImageTintColor = speakerColor;
+            conversationText.style.color = speakerColor;
+            personNameText.text = name;
+        }
+        public IEnumerator FadeChangeSpeaker(string name, Color speakerColor) // *** Using in GamePlayManager ***
+        {
+            Color circleStartColor = new Color(circle.style.unityBackgroundImageTintColor.value.r,circle.style.unityBackgroundImageTintColor.value.g,
+                circle.style.unityBackgroundImageTintColor.value.b);
+            Color dynamicColor;
+            float timeElapsed = 0;
+            if (personNameText.text != name)
+            {
+                personNameText.style.opacity = 0;
+                float opacity;
+                personNameText.text = name;
+                timeElapsed = 0;
+                while (timeElapsed < speakerFadeDuration)
+                {
+                    dynamicColor = Color.Lerp(circleStartColor, speakerColor, timeElapsed / speakerFadeDuration);
+                    opacity = Mathf.Lerp(0, 1, timeElapsed / speakerFadeDuration);
+                    personNameText.style.opacity = opacity;
+                    circle.style.unityBackgroundImageTintColor = dynamicColor;
+                    conversationText.style.color = dynamicColor;
+                    personNameBar.style.unityBackgroundImageTintColor = dynamicColor;
+                    bar.style.borderTopColor = dynamicColor;
+                    bar.style.borderBottomColor = dynamicColor;
+                    bar.style.borderLeftColor = dynamicColor;
+                    bar.style.borderRightColor = dynamicColor;
+                    timeElapsed += Time.deltaTime;
+                    yield return null;
+                }
+            }
+            else
+            {
+                timeElapsed = 0;
+                while (timeElapsed < speakerFadeDuration)
+                {
+                    dynamicColor = Color.Lerp(circleStartColor, speakerColor, timeElapsed / speakerFadeDuration);
+                    circle.style.unityBackgroundImageTintColor = dynamicColor;
+                    conversationText.style.color = dynamicColor;
+                    personNameBar.style.unityBackgroundImageTintColor = dynamicColor;
+                    bar.style.borderTopColor = dynamicColor;
+                    bar.style.borderBottomColor = dynamicColor;
+                    bar.style.borderLeftColor = dynamicColor;
+                    bar.style.borderRightColor = dynamicColor;
+                    timeElapsed += Time.deltaTime;
+                    yield return null;
+                }
+            }
+            
         }
 
         public IEnumerator TypeText(string text)
@@ -221,9 +278,83 @@ namespace Otome.GamePlay
         [HideInInspector]
         public SpriteState spriteState = SpriteState.Hiding;
         
-        public void ChangeSprite(Sprite targetSprite) // *** Using in GamePlayManager ***
+        public IEnumerator ChangeSprite(StoryScene.Sentence.EmotionList emotion,Character character, StoryScene.Sentence.CharacterTransitionType transitionType) // *** Using in GamePlayManager ***
         {
-            characterSprite.style.backgroundImage = new StyleBackground(targetSprite);
+            switch (transitionType)
+            {
+                case StoryScene.Sentence.CharacterTransitionType.Normal :
+                    switch (emotion)
+                    {
+                        case StoryScene.Sentence.EmotionList.normal :
+                            characterSprite.style.backgroundImage = new StyleBackground(character.normal);
+                            break;
+                        case StoryScene.Sentence.EmotionList.smile :
+                            characterSprite.style.backgroundImage = new StyleBackground(character.smile);
+                            break;
+                        case StoryScene.Sentence.EmotionList.angry :
+                            characterSprite.style.backgroundImage = new StyleBackground(character.angry);
+                            break;
+                    }
+                    break;
+                case StoryScene.Sentence.CharacterTransitionType.Fade :
+                    Color borderMainColor = new Color(bar.style.borderTopColor.value.r,bar.style.borderTopColor.value.g,bar.style.borderTopColor.value.b,bar.style.borderTopColor.value.a);
+                    Color dynamicValueColor = borderMainColor;
+                    personNameText.text = "";
+                    conversationText.text = "";
+                    float timeElapsed = 0;
+                    float opacity;
+                    float _a;
+                    while (timeElapsed < changeSpeakerColorDuration)
+                    {
+                        opacity = Mathf.Lerp(1, 0, timeElapsed / changeSpeakerColorDuration);
+                        _a = Mathf.Lerp(borderMainColor.a, 0, timeElapsed / changeSpeakerColorDuration);
+                        dynamicValueColor.a = _a;
+                        bar.style.borderTopColor = dynamicValueColor;
+                        bar.style.borderBottomColor = dynamicValueColor;
+                        bar.style.borderLeftColor = dynamicValueColor;
+                        bar.style.borderRightColor = dynamicValueColor;
+                        timeElapsed += Time.deltaTime;
+                        circle.style.opacity = opacity;
+                        personNameBar.style.opacity = opacity;
+                        yield return null;
+                    }
+                    circle.style.display = DisplayStyle.None;
+                    personNameBar.style.display = DisplayStyle.None;
+                    yield return StartCoroutine(FadeHideSprite());
+                    switch (emotion)
+                    {
+                        case StoryScene.Sentence.EmotionList.normal :
+                            characterSprite.style.backgroundImage = new StyleBackground(character.normal);
+                            break;
+                        case StoryScene.Sentence.EmotionList.smile :
+                            characterSprite.style.backgroundImage = new StyleBackground(character.smile);
+                            break;
+                        case StoryScene.Sentence.EmotionList.angry :
+                            characterSprite.style.backgroundImage = new StyleBackground(character.angry);
+                            break;
+                    }
+                    yield return StartCoroutine( FadeShowSprite());
+                    circle.style.display = DisplayStyle.Flex;
+                    personNameBar.style.display = DisplayStyle.Flex;
+                    timeElapsed = 0;
+                    while (timeElapsed < changeSpeakerColorDuration)
+                    {
+                        opacity = Mathf.Lerp(0, 1, timeElapsed / changeSpeakerColorDuration);
+                        _a = Mathf.Lerp(0, borderMainColor.a, timeElapsed / changeSpeakerColorDuration);
+                        dynamicValueColor.a = _a;
+                        bar.style.borderTopColor = dynamicValueColor;
+                        bar.style.borderBottomColor = dynamicValueColor;
+                        bar.style.borderLeftColor = dynamicValueColor;
+                        bar.style.borderRightColor = dynamicValueColor;
+                        circle.style.opacity = opacity;
+                        personNameBar.style.opacity = opacity;
+                        timeElapsed += Time.deltaTime;
+                        yield return null;
+                    }
+                    yield return new WaitForSeconds(1f);
+                    break;
+            }
+
         }
 
         public IEnumerator FadeShowSprite()
@@ -253,8 +384,7 @@ namespace Otome.GamePlay
 
         public IEnumerator FadeHideSprite()
         {
-            yield return new WaitForSeconds(fadeDelay);
-            if (spriteState == SpriteState.Showing)
+            if (spriteState == SpriteState.Hiding)
             {
                 yield break;
             }
@@ -329,7 +459,7 @@ namespace Otome.GamePlay
 
         void Update()
         {
-            
+            Debug.Log(spriteState);
         }
 
         private void OnValidate()

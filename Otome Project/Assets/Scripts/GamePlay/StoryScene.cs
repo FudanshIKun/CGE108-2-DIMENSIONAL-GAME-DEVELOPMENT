@@ -24,14 +24,29 @@ namespace Otome.GamePlay
 
             public Character character;
 
+            public enum CharacterTransitionType
+            {
+                Normal,
+                Fade
+            }
+            public CharacterTransitionType characterTransitionType;
+
             public enum EmotionList
             {
                 normal,
                 smile,
-                Angry
+                angry
             }
             public EmotionList SpriteEmotion;
             public Texture2D Place;
+
+            public enum BGTransitionType
+            {
+                normal,
+                Fade
+            }
+            public BGTransitionType bgTransitionType;
+            
             public AudioClip Soundfx;
 
         }
