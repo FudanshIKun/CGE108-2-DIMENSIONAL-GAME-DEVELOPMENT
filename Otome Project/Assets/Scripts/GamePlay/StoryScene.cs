@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using UnityEditor;
 using UnityEngine;
 
 namespace Otome.GamePlay
@@ -15,28 +17,41 @@ namespace Otome.GamePlay
         public struct Sentence
         {
             #region Conversation Info
+            [Space(3)]
+            [Header(("Sentence Setting"))]
 
             public string conversationText;
+            public SentenceType sentenceType;
 
             public enum SentenceType
             {
                 NormalConversation,
                 Question
             }
-            public SentenceType sentenceType;
 
             #endregion
 
-            #region Character Info
+            #region BottomBar
+
+            //[Space(3)]
+            //[Header("BottomBar Setting")]
+            
+
+            #endregion
+
+            #region Character
+            [Space(3)]
+            [Header("Character Setting")]
 
             public Character character;
+            public CharacterTransitionType characterTransitionType;
+            public EmotionList SpriteEmotion;
 
             public enum CharacterTransitionType
             {
                 Normal,
                 Fade
             }
-            public CharacterTransitionType characterTransitionType;
 
             public enum EmotionList
             {
@@ -44,29 +59,34 @@ namespace Otome.GamePlay
                 smile,
                 angry
             }
-            public EmotionList SpriteEmotion;
 
             #endregion
 
-            #region Background Info
+            #region Background
+            [Space(3)]
+            [Header(("Background Setting"))]
 
             public Texture2D Place;
+            public BGTransitionType bgTransitionType;
             public enum BGTransitionType
             {
-                BGnormal_CharacterNormal,
-                BGnormal_CharacterFade,
-                BGFade_CharacterNormal
+                bg_NormalCharacter_Normal,
+                bg_NormalCharacter_Fade,
+                bg_FadeCharacter_Normal
             }
-            public BGTransitionType bgTransitionType;
 
             #endregion
 
-            #region Sounds Info
-
+            #region Sound
+            [Space(3)] 
+            [Header(("Sound Setting"))] 
+            
+            AudioClip newBGSong;
             public AudioClip conversationSFX;
 
             #endregion
 
+            
         }
     }
 }

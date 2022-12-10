@@ -65,20 +65,23 @@ namespace Otome.GamePlay
 
         VisualElement currentBG;
         
-        public IEnumerator SwitchBackground(Texture2D newBG, StoryScene.Sentence.BGTransitionType transitionType) // *** Using in GamePlayManager ***
+        public IEnumerator SwitchBackground(Texture2D newBG, StoryScene.Sentence.BGTransitionType transitionType)
         {
             float timeElapsed = 0;
             float opacity;
             switch (transitionType)
             {
-                case StoryScene.Sentence.BGTransitionType.BGnormal_CharacterNormal :
+                case StoryScene.Sentence.BGTransitionType.bg_NormalCharacter_Normal :
                     if (currentBG == bg01)
                     {
-                        Debug.Log("Change currentBG to bg02");
+                        // Change background02 in the back to new background and;
                         bg02.style.backgroundImage = new StyleBackground(newBG);
+                        // make sure background01 is on the front layer;
                         bg01.BringToFront();
+                        // make sure that background02 in the back layer is not hidden;
                         bg02.style.opacity = 1;
                         bg02.style.display = DisplayStyle.Flex;
+                        // start fading background01's opacity to 0 and hide it;
                         timeElapsed = 0;
                         while (timeElapsed < backgroundFadeDuration)
                         {
@@ -88,15 +91,19 @@ namespace Otome.GamePlay
                             yield return null;
                         }
                         bg01.style.display = DisplayStyle.None;
+                        // update the state of currentBG;
                         currentBG = bg02;
                     }
                     else if (currentBG == bg02)
                     {
-                        Debug.Log("Change currentBG to bg01");
+                        // Change background01 in the back to new background and;
                         bg01.style.backgroundImage = new StyleBackground(newBG);
+                        // make sure background02 is on the front layer;
                         bg02.BringToFront();
+                        // make sure that background01 in the back layer is not hidden;
                         bg01.style.opacity = 1;
                         bg01.style.display = DisplayStyle.Flex;
+                        // start fading background02's opacity to 0 and hide it;
                         timeElapsed = 0;
                         while (timeElapsed < backgroundFadeDuration)
                         {
@@ -106,12 +113,14 @@ namespace Otome.GamePlay
                             yield return null;
                         }
                         bg02.style.display = DisplayStyle.None;
+                        // update the state of currentBG;
                         currentBG = bg01;
                     }
                     break; 
-                case StoryScene.Sentence.BGTransitionType.BGnormal_CharacterFade :
+                case StoryScene.Sentence.BGTransitionType.bg_NormalCharacter_Fade :
+                    
                     break;
-                case StoryScene.Sentence.BGTransitionType.BGFade_CharacterNormal :
+                case StoryScene.Sentence.BGTransitionType.bg_FadeCharacter_Normal :
                     break;
                     
             }
@@ -143,13 +152,16 @@ namespace Otome.GamePlay
 
         public IEnumerator FadeShowBottomBar() 
         {
+            // check if the bottombar is already showing;
             if (_barState == BottomBarState.Showing)
             {
                 yield break;
             }
-
+            // deleate the conversationText.text
             conversationText.text = "";
+            // make sure bottombar is visible while the opcaity is still 0;
             bottomBar.style.display = DisplayStyle.Flex;
+            // start fading bottombar's opacity to 1;
             float timeElapsed = 0;
             float opacity;
             while (timeElapsed < bottombarFadeDuration)
@@ -160,6 +172,7 @@ namespace Otome.GamePlay
                 if (bottomBar.style.opacity == 1) { _barState = BottomBarState.Showing; }
                 yield return null;
             }
+            // make sure that the bottombar has fully showing;
             if (_barState == BottomBarState.Hiding)
             {
                 bottomBar.style.opacity = 1;
@@ -168,10 +181,12 @@ namespace Otome.GamePlay
         }
         public IEnumerator FadeHideBottomBar() 
         {
+            // check if the bottombar is already hidden;
             if (_barState == BottomBarState.Hiding)
             {
                 yield break;
             }
+            // start fading bottombar's opacity to 0;
             float timeElapsed = 0;
             float opacity;
             while (timeElapsed < bottombarFadeDuration)
@@ -182,14 +197,17 @@ namespace Otome.GamePlay
                 if (bottomBar.style.opacity == 0) { _barState = BottomBarState.Hiding; }
                 yield return null;
             }
+            // make sure that the bottombar has fully hidden;
             if (_barState == BottomBarState.Showing)
             {
                 bottomBar.style.opacity = 0;
                 _barState = BottomBarState.Hiding;
             }
+            // make sure bottombar is invisible even the opcaity is 0;
             bottomBar.style.display = DisplayStyle.None;
         }
         
+        // change the bottombar speakerName & speakerColor instantly
         public void ChangeSpeaker(string name, Color speakerColor)
         {
             circle.style.unityBackgroundImageTintColor = speakerColor;
@@ -201,13 +219,17 @@ namespace Otome.GamePlay
             conversationText.style.color = speakerColor;
             personNameText.text = name;
         }
-        public IEnumerator FadeChangeSpeaker(string name, Color speakerColor) // *** Using in GamePlayManager ***
+        public IEnumerator FadeChangeSpeaker(string name, Color speakerColor) // change the bottombar speakerName & speakerColor by fading in time setting
         {
-            Color circleStartColor = new Color(circle.style.unityBackgroundImageTintColor.value.r,circle.style.unityBackgroundImageTintColor.value.g,
+            // get the starter color of the bottombar's speakerColor ( border, circle and personNameBar have the same color )
+            Color circleStartColor = new Color(circle.style.unityBackgroundImageTintColor.value.r,
+                circle.style.unityBackgroundImageTintColor.value.g,
                 circle.style.unityBackgroundImageTintColor.value.b);
+            // use this var to dynamic apply color's value that is lerping
             Color dynamicColor;
+            // start fading the color from startColor to targetColor;
             float timeElapsed = 0;
-            if (personNameText.text != name)
+            if (personNameText.text != name) // fade the name as well if the name has change;
             {
                 personNameText.style.opacity = 0;
                 float opacity;
@@ -231,6 +253,7 @@ namespace Otome.GamePlay
             }
             else
             {
+                // if the name hasn't change just fade normally;
                 timeElapsed = 0;
                 while (timeElapsed < speakerFadeDuration)
                 {
@@ -251,9 +274,13 @@ namespace Otome.GamePlay
 
         public IEnumerator TypeText(string text)
         {
+            // wait a second before start typing;
             yield return new WaitForSeconds(0.5f);
+            // delete the old conversationText;
             conversationText.text = "";
+            // Update the typing state
             typingState = TypingState.Playing;
+            // start typing
             int wordIndex = 0;
             while (typingState != TypingState.Compleated)
             {
@@ -265,6 +292,11 @@ namespace Otome.GamePlay
                     break;
                 }
             }
+        }
+        
+        public IEnumerator AskQuestion()
+        {
+            yield return null;
         }
         
         #endregion
@@ -281,10 +313,14 @@ namespace Otome.GamePlay
         [HideInInspector]
         public SpriteState spriteState = SpriteState.Hiding;
         
-        public IEnumerator ChangeSprite(StoryScene.Sentence.EmotionList emotion,Character character, StoryScene.Sentence.CharacterTransitionType transitionType) // *** Using in GamePlayManager ***
+        public IEnumerator ChangeSprite(StoryScene.Sentence.EmotionList emotion,
+            Character character, 
+            StoryScene.Sentence.CharacterTransitionType transitionType)
         {
+            // Sprite TransitionType set in the StoryScene.Sentence
             switch (transitionType)
             {
+                // InstantlyChangeSprite & Emotion;
                 case StoryScene.Sentence.CharacterTransitionType.Normal :
                     switch (emotion)
                     {
@@ -299,31 +335,28 @@ namespace Otome.GamePlay
                             break;
                     }
                     break;
+                // Fade Change Character Sprite to hide then change it and fade it on;
                 case StoryScene.Sentence.CharacterTransitionType.Fade :
-                    Color borderMainColor = new Color(bar.style.borderTopColor.value.r,bar.style.borderTopColor.value.g,bar.style.borderTopColor.value.b,bar.style.borderTopColor.value.a);
-                    Color dynamicValueColor = borderMainColor;
+                    // Deleate Old Text & Name;
                     personNameText.text = "";
                     conversationText.text = "";
+                    // Start Fading Hide BottomBar
                     float timeElapsed = 0;
                     float opacity;
-                    float _a;
                     while (timeElapsed < changeSpeakerColorDuration)
                     {
                         opacity = Mathf.Lerp(1, 0, timeElapsed / changeSpeakerColorDuration);
-                        _a = Mathf.Lerp(borderMainColor.a, 0, timeElapsed / changeSpeakerColorDuration);
-                        dynamicValueColor.a = _a;
-                        bar.style.borderTopColor = dynamicValueColor;
-                        bar.style.borderBottomColor = dynamicValueColor;
-                        bar.style.borderLeftColor = dynamicValueColor;
-                        bar.style.borderRightColor = dynamicValueColor;
                         timeElapsed += Time.deltaTime;
+                        bar.style.opacity = opacity;
                         circle.style.opacity = opacity;
                         personNameBar.style.opacity = opacity;
                         yield return null;
                     }
                     circle.style.display = DisplayStyle.None;
                     personNameBar.style.display = DisplayStyle.None;
+                    // Fade Hide Sprite;
                     yield return StartCoroutine(FadeHideSprite());
+                    // Change Sprite Emotion;
                     switch (emotion)
                     {
                         case StoryScene.Sentence.EmotionList.normal :
@@ -336,19 +369,16 @@ namespace Otome.GamePlay
                             characterSprite.style.backgroundImage = new StyleBackground(character.angry);
                             break;
                     }
+                    // Fade Show Sprite;
                     yield return StartCoroutine( FadeShowSprite());
                     circle.style.display = DisplayStyle.Flex;
                     personNameBar.style.display = DisplayStyle.Flex;
+                    // Start Fading Show BottomBar
                     timeElapsed = 0;
                     while (timeElapsed < changeSpeakerColorDuration)
                     {
                         opacity = Mathf.Lerp(0, 1, timeElapsed / changeSpeakerColorDuration);
-                        _a = Mathf.Lerp(0, borderMainColor.a, timeElapsed / changeSpeakerColorDuration);
-                        dynamicValueColor.a = _a;
-                        bar.style.borderTopColor = dynamicValueColor;
-                        bar.style.borderBottomColor = dynamicValueColor;
-                        bar.style.borderLeftColor = dynamicValueColor;
-                        bar.style.borderRightColor = dynamicValueColor;
+                        bar.style.opacity = opacity;
                         circle.style.opacity = opacity;
                         personNameBar.style.opacity = opacity;
                         timeElapsed += Time.deltaTime;
@@ -467,11 +497,6 @@ namespace Otome.GamePlay
             
             PreparedUI();
             AddFunctionUI();
-        }
-
-        void Update()
-        {
-            
         }
     }
 }

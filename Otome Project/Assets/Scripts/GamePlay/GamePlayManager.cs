@@ -55,6 +55,7 @@ namespace Otome.GamePlay
         }
         private ConversationState conversationState = ConversationState.COMPLEATED;
         private Texture2D currenntPlace;
+        private Character currentCharacter;
 
         public IEnumerator PlayNextSentence()
         {
@@ -73,24 +74,41 @@ namespace Otome.GamePlay
                 yield break;
             }
             
-            if (currentSceneStory.Sentences[++sentenceIndex].Place != currenntPlace) // Check if the sentence we gonna play change the location
+            // Check if the sentence we gonna play change the location
+            if (currentSceneStory.Sentences[++sentenceIndex].Place != currenntPlace)
             {
                 // Switch Background if the new sentence has new location;
-                StartCoroutine(mainUI.SwitchBackground(currentSceneStory.Sentences[sentenceIndex].Place, currentSceneStory.Sentences[sentenceIndex].bgTransitionType));
+                yield return StartCoroutine(mainUI.SwitchBackground(
+                    currentSceneStory.Sentences[sentenceIndex].Place, 
+                    currentSceneStory.Sentences[sentenceIndex].bgTransitionType));
+                yield return new WaitForSeconds(1f);
                 
                 // Change character sprite by the transition type setting in sentence;
-                yield return StartCoroutine(mainUI.ChangeSprite(currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,currentSceneStory.Sentences[sentenceIndex].character,
+                yield return StartCoroutine(mainUI.ChangeSprite(
+                    currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
+                    currentSceneStory.Sentences[sentenceIndex].character,
                     currentSceneStory.Sentences[sentenceIndex].characterTransitionType));
                 
                 // update the currentPlace for check if there's new location;
                 currenntPlace = currentSceneStory.Sentences[sentenceIndex].Place;
                 
                 // FadeChange Bottombar Color if the new sentence has the new character
-                StartCoroutine( mainUI.FadeChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, 
+                StartCoroutine( mainUI.FadeChangeSpeaker(
+                    currentSceneStory.Sentences[sentenceIndex].character.characterName, 
                     currentSceneStory.Sentences[sentenceIndex].character.characterColor));
-                
-                // Start typing conversation;
-                StartCoroutine(mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+
+                if (currentSceneStory.Sentences[sentenceIndex].sentenceType ==
+                    StoryScene.Sentence.SentenceType.Question)
+                {
+                    StartCoroutine(mainUI.AskQuestion());
+                }
+                else if (currentSceneStory.Sentences[sentenceIndex].sentenceType == 
+                         StoryScene.Sentence.SentenceType.NormalConversation)
+                {
+                    // Start typing conversation;
+                    yield return StartCoroutine(
+                        mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                }
             }
             else // if the new sentence has the same location as the previous one
             {
@@ -98,17 +116,14 @@ namespace Otome.GamePlay
                 StartCoroutine(mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
                 
                 // Change character sprite by the transition type setting in sentence;
-                mainUI.FadeChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, currentSceneStory.Sentences[sentenceIndex].character.characterColor);
-                StartCoroutine(mainUI.ChangeSprite(currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,currentSceneStory.Sentences[sentenceIndex].character,
+                mainUI.FadeChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, 
+                    currentSceneStory.Sentences[sentenceIndex].character.characterColor);
+                // Change BottomBarColor & Speaker Info;
+                yield return StartCoroutine(mainUI.ChangeSprite(
+                    currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
+                    currentSceneStory.Sentences[sentenceIndex].character,
                     currentSceneStory.Sentences[sentenceIndex].characterTransitionType));
             }
-            
-            // if the typing hasn't finish wait in this while state;
-            while (mainUI.typingState == GamePlayUI.TypingState.Playing)
-            {
-                yield return null;
-            }
-            
             // delay before player can get to the next conversation;
             yield return new WaitForSeconds(NextConversationDelay);
             // update the conversation state;
@@ -120,9 +135,11 @@ namespace Otome.GamePlay
             // Check if the next sentence change place;
             currenntPlace = currentSceneStory.Sentences[0].Place;
             // Set character Info on Bottombar before play the first sentence;
-            mainUI.ChangeSpeaker(currentSceneStory.Sentences[0].character.characterName, currentSceneStory.Sentences[0].character.characterColor);
+            mainUI.ChangeSpeaker(currentSceneStory.Sentences[0].character.characterName, 
+                currentSceneStory.Sentences[0].character.characterColor);
             // set character sprite before play the first sentence;
-            StartCoroutine(mainUI.ChangeSprite(currentSceneStory.Sentences[0].SpriteEmotion,currentSceneStory.Sentences[0].character , 
+            StartCoroutine(mainUI.ChangeSprite(currentSceneStory.Sentences[0].SpriteEmotion,
+                currentSceneStory.Sentences[0].character , 
                 currentSceneStory.Sentences[0].characterTransitionType));
             sentenceIndex = -1;
             // Fade up Sprite & Bottombar;
