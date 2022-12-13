@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using log4net.Core;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.SceneManagement;
@@ -9,36 +11,36 @@ namespace Otome.GamePlay
 {
     public class GamePlayUI : MonoBehaviour
     {
-        [Header("UI Setting")] 
+        [Header("UI Setting")]
         private GamePlayManager _gamePlayManager;
-        [Range(1f,1.5f)]
-        [SerializeField] float bottombarFadeDuration;
-        [Range(0.1f, 1.5f)] 
-        [SerializeField] float fadeDelay;
-        [Range(0.5f, 1.5f)] 
-        [SerializeField] float spriteFadeDuration;
-        [Range(0.5f, 1.5f)] 
-        [SerializeField] float backgroundFadeDuration;
-        [Range(0.1f, 1f)]
-        [SerializeField] float speakerFadeDuration;
-        [Range(0.1f, 1f)] 
-        [SerializeField] private float changeSpeakerColorDuration;
-        private BottomBarState _barState = BottomBarState.Hiding;
-        [HideInInspector]
-        public TypingState typingState = TypingState.Compleated;
+        
+        [Range(1f,1.5f)] [SerializeField] float bottombarFadeDuration;
+        
+        [Range(0.5f, 1.5f)] [SerializeField] float spriteFadeDuration;
+        
+        [Range(0.5f, 1.5f)] [SerializeField] float backgroundFadeDuration;
+        
+        [Range(0.1f, 1f)] [SerializeField] float speakerFadeDuration;
+        
+        [Range(0.1f, 1f)] [SerializeField] private float changeSpeakerColorDuration;
+        
+        private BottomBarState bottombarState = BottomBarState.Hiding;
+        
+        [HideInInspector] public TypingState typingState = TypingState.Compleated;
 
         public VisualElement root;
         
         #region UI Management
-
-        Button diaryButton;
+        
         Button settingButton;
         VisualElement fadePanel;
-
-        void DiaryPressed()
-        {
-            
-        }
+        GroupBox questionPanel;
+        Button answerButton01;
+        Button answerButton02;
+        Button answerButton03;
+        Label _answerText01;
+        Label _answerText02;
+        Label _answerText03;
 
         void SettingPressed()
         {
@@ -64,6 +66,18 @@ namespace Otome.GamePlay
         VisualElement bg02;
 
         VisualElement currentBG;
+
+        public void SetBackground(Texture2D newBG, int numberOfBg)
+        {
+            if (numberOfBg == 1)
+            {
+                bg01.style.backgroundImage = new StyleBackground(newBG);
+            }
+            else if (numberOfBg == 2)
+            {
+                bg02.style.backgroundImage = new StyleBackground(newBG);
+            }
+        }
         
         public IEnumerator SwitchBackground(Texture2D newBG, StoryScene.Sentence.BGTransitionType transitionType)
         {
@@ -118,7 +132,6 @@ namespace Otome.GamePlay
                     }
                     break; 
                 case StoryScene.Sentence.BGTransitionType.bg_NormalCharacter_Fade :
-                    
                     break;
                 case StoryScene.Sentence.BGTransitionType.bg_FadeCharacter_Normal :
                     break;
@@ -153,7 +166,7 @@ namespace Otome.GamePlay
         public IEnumerator FadeShowBottomBar() 
         {
             // check if the bottombar is already showing;
-            if (_barState == BottomBarState.Showing)
+            if (bottombarState == BottomBarState.Showing)
             {
                 yield break;
             }
@@ -169,20 +182,20 @@ namespace Otome.GamePlay
                 opacity = Mathf.Lerp(0, 1, timeElapsed / bottombarFadeDuration);
                 timeElapsed += Time.deltaTime;
                 bottomBar.style.opacity = opacity;
-                if (bottomBar.style.opacity == 1) { _barState = BottomBarState.Showing; }
+                if (bottomBar.style.opacity == 1) { bottombarState = BottomBarState.Showing; }
                 yield return null;
             }
             // make sure that the bottombar has fully showing;
-            if (_barState == BottomBarState.Hiding)
+            if (bottombarState == BottomBarState.Hiding)
             {
                 bottomBar.style.opacity = 1;
-                _barState = BottomBarState.Showing;
+                bottombarState = BottomBarState.Showing;
             }
         }
         public IEnumerator FadeHideBottomBar() 
         {
             // check if the bottombar is already hidden;
-            if (_barState == BottomBarState.Hiding)
+            if (bottombarState == BottomBarState.Hiding)
             {
                 yield break;
             }
@@ -194,14 +207,14 @@ namespace Otome.GamePlay
                 opacity = Mathf.Lerp(1, 0, timeElapsed / bottombarFadeDuration);
                 timeElapsed += Time.deltaTime;
                 bottomBar.style.opacity = opacity;
-                if (bottomBar.style.opacity == 0) { _barState = BottomBarState.Hiding; }
+                if (bottomBar.style.opacity == 0) { bottombarState = BottomBarState.Hiding; }
                 yield return null;
             }
             // make sure that the bottombar has fully hidden;
-            if (_barState == BottomBarState.Showing)
+            if (bottombarState == BottomBarState.Showing)
             {
                 bottomBar.style.opacity = 0;
-                _barState = BottomBarState.Hiding;
+                bottombarState = BottomBarState.Hiding;
             }
             // make sure bottombar is invisible even the opcaity is 0;
             bottomBar.style.display = DisplayStyle.None;
@@ -294,10 +307,92 @@ namespace Otome.GamePlay
             }
         }
         
-        public IEnumerator AskQuestion()
+        // ReSharper disable Unity.PerformanceAnalysis
+        public IEnumerator AskQuestion(List<StoryScene.ChoiceLabel> Choices)
         {
-            yield return null;
+            if (Choices.Count > 3)
+            {
+                Debug.Log("Detected more than 3 choice in a question");
+                yield break;
+            }
+
+            _answerText01.text = Choices[0].text;
+            _answerText02.text = Choices[1].text;
+            _answerText03.text = Choices[2].text;
+            
+            // FadeShow Question
+            float timeElapsed = 0;
+            float opacity;
+            questionPanel.style.display = DisplayStyle.Flex;
+            while (timeElapsed < bottombarFadeDuration)
+            {
+                opacity = Mathf.Lerp(0, 1, timeElapsed / bottombarFadeDuration);
+                questionPanel.style.opacity = opacity;
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+            yield return new WaitForSeconds(_gamePlayManager.NextConversationDelay);
+            answerButton01.pickingMode = PickingMode.Position;
+            answerButton02.pickingMode = PickingMode.Position;
+            answerButton03.pickingMode = PickingMode.Position;
         }
+
+        public IEnumerator Answered()
+        {
+            // FadeHide Question
+            float timeElapsed = 0;
+            float opacity;
+            questionPanel.style.display = DisplayStyle.Flex;
+            while (timeElapsed < bottombarFadeDuration)
+            {
+                opacity = Mathf.Lerp(1, 0, timeElapsed / bottombarFadeDuration);
+                questionPanel.style.opacity = opacity;
+                timeElapsed += Time.deltaTime;
+                yield return null;
+            }
+            questionPanel.style.display = DisplayStyle.None;
+        }
+
+        void Answer01Clicked()
+        {
+            StartCoroutine(Answered());
+            _gamePlayManager.choiceChosen = 0;
+            _gamePlayManager.SwitchScene();
+            _gamePlayManager.currentQuestionHasAnswered = true;
+            _gamePlayManager.conversationState = GamePlayManager.ConversationState.COMPLEATED;
+
+            answerButton01.pickingMode = PickingMode.Ignore;
+            answerButton02.pickingMode = PickingMode.Ignore;
+            answerButton03.pickingMode = PickingMode.Ignore;
+            StartCoroutine(_gamePlayManager.PlayNextSentence());
+        }
+        void Answer02Clicked()
+        {
+            StartCoroutine(Answered());
+            _gamePlayManager.choiceChosen = 1;
+            _gamePlayManager.SwitchScene();
+            _gamePlayManager.currentQuestionHasAnswered = true;
+            _gamePlayManager.conversationState = GamePlayManager.ConversationState.COMPLEATED;
+
+            answerButton01.pickingMode = PickingMode.Ignore;
+            answerButton02.pickingMode = PickingMode.Ignore;
+            answerButton03.pickingMode = PickingMode.Ignore;
+            StartCoroutine(_gamePlayManager.PlayNextSentence());
+        }
+        void Answer03Clicked()
+        {
+            StartCoroutine(Answered());
+            _gamePlayManager.choiceChosen = 2;
+            _gamePlayManager.SwitchScene();
+            _gamePlayManager.currentQuestionHasAnswered = true;
+            _gamePlayManager.conversationState = GamePlayManager.ConversationState.COMPLEATED;
+
+            answerButton01.pickingMode = PickingMode.Ignore;
+            answerButton02.pickingMode = PickingMode.Ignore;
+            answerButton03.pickingMode = PickingMode.Ignore;
+            StartCoroutine(_gamePlayManager.PlayNextSentence());
+        }
+        
         
         #endregion
         
@@ -313,78 +408,21 @@ namespace Otome.GamePlay
         [HideInInspector]
         public SpriteState spriteState = SpriteState.Hiding;
         
-        public IEnumerator ChangeSprite(StoryScene.Sentence.EmotionList emotion,
-            Character character, 
-            StoryScene.Sentence.CharacterTransitionType transitionType)
+        public void ChangeSprite(StoryScene.Sentence.EmotionList emotion,
+            Character character)
         {
             // Sprite TransitionType set in the StoryScene.Sentence
-            switch (transitionType)
+            switch (emotion)
             {
                 // InstantlyChangeSprite & Emotion;
-                case StoryScene.Sentence.CharacterTransitionType.Normal :
-                    switch (emotion)
-                    {
-                        case StoryScene.Sentence.EmotionList.normal :
-                            characterSprite.style.backgroundImage = new StyleBackground(character.normal);
-                            break;
-                        case StoryScene.Sentence.EmotionList.smile :
-                            characterSprite.style.backgroundImage = new StyleBackground(character.smile);
-                            break;
-                        case StoryScene.Sentence.EmotionList.angry :
-                            characterSprite.style.backgroundImage = new StyleBackground(character.angry);
-                            break;
-                    }
+                case StoryScene.Sentence.EmotionList.normal :
+                    characterSprite.style.backgroundImage = new StyleBackground(character.normal);
                     break;
-                // Fade Change Character Sprite to hide then change it and fade it on;
-                case StoryScene.Sentence.CharacterTransitionType.Fade :
-                    // Deleate Old Text & Name;
-                    personNameText.text = "";
-                    conversationText.text = "";
-                    // Start Fading Hide BottomBar
-                    float timeElapsed = 0;
-                    float opacity;
-                    while (timeElapsed < changeSpeakerColorDuration)
-                    {
-                        opacity = Mathf.Lerp(1, 0, timeElapsed / changeSpeakerColorDuration);
-                        timeElapsed += Time.deltaTime;
-                        bar.style.opacity = opacity;
-                        circle.style.opacity = opacity;
-                        personNameBar.style.opacity = opacity;
-                        yield return null;
-                    }
-                    circle.style.display = DisplayStyle.None;
-                    personNameBar.style.display = DisplayStyle.None;
-                    // Fade Hide Sprite;
-                    yield return StartCoroutine(FadeHideSprite());
-                    // Change Sprite Emotion;
-                    switch (emotion)
-                    {
-                        case StoryScene.Sentence.EmotionList.normal :
-                            characterSprite.style.backgroundImage = new StyleBackground(character.normal);
-                            break;
-                        case StoryScene.Sentence.EmotionList.smile :
-                            characterSprite.style.backgroundImage = new StyleBackground(character.smile);
-                            break;
-                        case StoryScene.Sentence.EmotionList.angry :
-                            characterSprite.style.backgroundImage = new StyleBackground(character.angry);
-                            break;
-                    }
-                    // Fade Show Sprite;
-                    yield return StartCoroutine( FadeShowSprite());
-                    circle.style.display = DisplayStyle.Flex;
-                    personNameBar.style.display = DisplayStyle.Flex;
-                    // Start Fading Show BottomBar
-                    timeElapsed = 0;
-                    while (timeElapsed < changeSpeakerColorDuration)
-                    {
-                        opacity = Mathf.Lerp(0, 1, timeElapsed / changeSpeakerColorDuration);
-                        bar.style.opacity = opacity;
-                        circle.style.opacity = opacity;
-                        personNameBar.style.opacity = opacity;
-                        timeElapsed += Time.deltaTime;
-                        yield return null;
-                    }
-                    yield return new WaitForSeconds(1f);
+                case StoryScene.Sentence.EmotionList.smile :
+                    characterSprite.style.backgroundImage = new StyleBackground(character.smile);
+                    break;
+                case StoryScene.Sentence.EmotionList.angry :
+                    characterSprite.style.backgroundImage = new StyleBackground(character.angry);
                     break;
             }
 
@@ -452,7 +490,7 @@ namespace Otome.GamePlay
 
         void PreparedUI()
         {
-            _barState = BottomBarState.Hiding;
+            bottombarState = BottomBarState.Hiding;
             spriteState = SpriteState.Hiding;
             bottomBar.style.opacity = 0;
             bottomBar.style.display = DisplayStyle.None;
@@ -462,19 +500,25 @@ namespace Otome.GamePlay
             currentBG = bg01;
             fadePanel.style.opacity = 0;
             fadePanel.style.display = DisplayStyle.None;
+            questionPanel.style.display = DisplayStyle.None;
+            questionPanel.style.opacity = 0;
+            answerButton01.pickingMode = PickingMode.Ignore;
+            answerButton02.pickingMode = PickingMode.Ignore;
+            answerButton03.pickingMode = PickingMode.Ignore;
 
         }
         void AddFunctionUI()
         {
             _gamePlayManager = FindObjectOfType<GamePlayManager>();
-            diaryButton.clicked += DiaryPressed;
-            diaryButton.clicked += PausedPressed;
             settingButton.clicked += SettingPressed;
             settingButton.clicked += PausedPressed;
             bg01.AddManipulator(new Clickable(evt => StartCoroutine(_gamePlayManager.PlayNextSentence())));
             bg02.AddManipulator(new Clickable(evt => StartCoroutine(_gamePlayManager.PlayNextSentence())));
             bottomBar.AddManipulator(new Clickable(evt => StartCoroutine(_gamePlayManager.PlayNextSentence())));
             fadePanel.AddManipulator(new Clickable(evt => StartCoroutine(_gamePlayManager.PlayNextSentence())));
+            answerButton01.clicked += Answer01Clicked;
+            answerButton02.clicked += Answer02Clicked;
+            answerButton03.clicked += Answer03Clicked;
         }
         
         void Start()
@@ -490,13 +534,25 @@ namespace Otome.GamePlay
             personNameBar = root.Q<VisualElement>("NameBar");
             personNameText = root.Q<Label>("PersonNameText");
             conversationText = root.Q<Label>("ConversationText");
-            diaryButton = root.Q<Button>("DiaryButton");
             settingButton = root.Q<Button>("SettingButton");
             characterSprite = root.Q<VisualElement>("Character");
             fadePanel = root.Q<VisualElement>("FadePanel");
+            questionPanel = root.Q<GroupBox>("QuestionPanel");
+            answerButton01 = root.Q<Button>("Answer01");
+            answerButton02 = root.Q<Button>("Answer02");
+            answerButton03 = root.Q<Button>("Answer03");
+            _answerText01 = root.Q<Label>("Answer01Text");
+            _answerText02 = root.Q<Label>("Answer02Text");
+            _answerText03 = root.Q<Label>("Answer03Text");
+            
             
             PreparedUI();
             AddFunctionUI();
+        }
+
+        void Update()
+        {
+            
         }
     }
 }

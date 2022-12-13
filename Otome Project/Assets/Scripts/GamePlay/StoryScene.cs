@@ -13,7 +13,7 @@ namespace Otome.GamePlay
         public StoryScene nextScene;
         public List<Sentence> Sentences;
 
-        [System.Serializable]
+        [Serializable]
         public struct Sentence
         {
             #region Conversation Info
@@ -22,6 +22,7 @@ namespace Otome.GamePlay
 
             public string conversationText;
             public SentenceType sentenceType;
+            public List<ChoiceLabel> questionChoices;
 
             public enum SentenceType
             {
@@ -88,5 +89,17 @@ namespace Otome.GamePlay
 
             
         }
+        [Serializable]
+        public struct ChoiceLabel
+        {
+            public string text;
+            public StoryScene nextScene;
+
+            public void StoreAnswer()
+            {
+                
+            }
+        }
+    
     }
 }

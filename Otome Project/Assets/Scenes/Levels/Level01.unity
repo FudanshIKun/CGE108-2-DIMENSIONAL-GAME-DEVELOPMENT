@@ -235,8 +235,13 @@ MonoBehaviour:
   bgSpeaker: {fileID: 1325890642}
   sfxSpeaker: {fileID: 1311110360}
   gameState: 0
+  currentQuestionHasAnswered: 0
   isPaused: 0
   currentSceneStory: {fileID: 11400000, guid: 1fbf3376e8287c143a29018d0dd1766f, type: 2}
+  sentenceIndex: -1
+  questionIndex: 0
+  conversationState: 1
+  choiceChosen: 0
   gameplayState: 0
 --- !u!1 &608267800
 GameObject:
@@ -475,8 +480,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 608e78f3b88876147b6843ec66c5e9fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  currentScene: 0
-  gameState: 0
+  currentScene: 2
+  gameState: 2
 --- !u!1 &1236071987
 GameObject:
   m_ObjectHideFlags: 0
@@ -541,7 +546,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bottombarFadeDuration: 1.5
   fadeDelay: 0.5
-  spriteFadeDuration: 0.75
+  spriteFadeDuration: 1
   backgroundFadeDuration: 1.5
   speakerFadeDuration: 0.5
   changeSpeakerColorDuration: 0.5

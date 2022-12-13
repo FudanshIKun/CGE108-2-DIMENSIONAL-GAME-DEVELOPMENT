@@ -3,11 +3,23 @@
   <component name="ChangeListManager">
     <list default="true" id="f2bfc7d5-8c76-4557-86b6-7480a7c33296" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.Otome Project/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.Otome Project/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scenes/Levels/Level01.unity" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scenes/Levels/Level01.unity" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayManager.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayManager.cs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayUI.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayUI.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Story/StoryScene/Level01.asset" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Story/StoryScene/Level01.asset.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Story/StoryScene/Level01/Level01.asset" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/Story/StoryScene/Level01/Level01.asset.meta" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Assets/Scripts/GamePlay/StoryScene.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/GamePlay/StoryScene.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/UI Template/GamePlayTemplate.uxml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/UI Template/GamePlayTemplate.uxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Scripts/UI/UI Template/LevelMenuTemplate.uxml" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/Scripts/UI/UI Template/LevelMenuTemplate.uxml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Backgrounds/Prototype/School01 1920x1080.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Backgrounds/Prototype/School01 1920x1080.jpg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Backgrounds/Prototype/School02 1920x1080.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Backgrounds/Prototype/School02 1920x1080.jpg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Backgrounds/Prototype/room_day.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Backgrounds/Prototype/room_day.jpg.meta" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Backgrounds/Prototype/room_night.jpg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Assets/Sprites/Backgrounds/Prototype/room_night.jpg.meta" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +28,7 @@
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/Core/GameManager.cs" root0="FORCE_HIGHLIGHTING" />
+    <setting file="file://$PROJECT_DIR$/Assets/Scripts/GamePlay/ChoiceScene.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayManager.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GamePlay/GamePlayUI.cs" root0="FORCE_HIGHLIGHTING" />
     <setting file="file://$PROJECT_DIR$/Assets/Scripts/GamePlay/StoryScene.cs" root0="FORCE_HIGHLIGHTING" />
@@ -94,6 +107,12 @@
       <workItem from="1670411936548" duration="8155000" />
       <workItem from="1670490284059" duration="3423000" />
       <workItem from="1670588771649" duration="10929000" />
+      <workItem from="1670680273372" duration="1384000" />
+      <workItem from="1670718005210" duration="603000" />
+      <workItem from="1670727572405" duration="23745000" />
+      <workItem from="1670813770051" duration="13981000" />
+      <workItem from="1670891063483" duration="631000" />
+      <workItem from="1670909189498" duration="5866000" />
     </task>
     <servers />
   </component>

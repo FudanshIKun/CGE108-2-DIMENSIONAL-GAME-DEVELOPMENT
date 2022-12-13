@@ -61,26 +61,31 @@ namespace Otome.Core
 
         void Start()
         {
-            switch (SceneManager.GetActiveScene().ToString())
+            switch (SceneManager.GetActiveScene().name)
             {
-                case var value when value == SceneList.MainMenu.ToString() :
+                case "MainMenu" :
                     gameState = GameState.InMenu;
+                    currentScene = SceneList.MainMenu;
                     break;
-                case var value when value == SceneList.LevelMenu.ToString() :
+                case "LevelMenu" :
                     gameState = GameState.InMenu;
+                    currentScene = SceneList.LevelMenu;
                     break;
-                case var value when value == SceneList.Level01.ToString() :
+                case "Level01" :
                     gameState = GameState.InGame;
+                    currentScene = SceneList.Level01;
                     break;
-                case var value when value == SceneList.Level02.ToString() :
+                case "Level02" :
                     gameState = GameState.InGame;
+                    currentScene = SceneList.Level02;
                     break;
             }
         }
 
         void Update()
         {
-            Debug.Log(gameState);
+            //Debug.Log("GameState : " + gameState);
+            //Debug.Log("CurrentScene : " + currentScene);
         }
     }
 }
