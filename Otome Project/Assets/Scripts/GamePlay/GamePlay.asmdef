@@ -2,7 +2,8 @@
     "name": "GamePlay",
     "rootNamespace": "Otome.GamePlay",
     "references": [
-        "GUID:be900d9fb1beac547abeec72cc2eaf14"
+        "GUID:be900d9fb1beac547abeec72cc2eaf14",
+        "GUID:3ccf3c41313d55a4c97aa86c4042e2cf"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
