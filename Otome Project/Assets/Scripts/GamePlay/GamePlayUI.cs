@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -33,9 +34,15 @@ namespace Otome.GamePlay
         #region UI Management
         
             Button settingButton;
+            VisualElement settingElement;
+            VisualElement settingPanel;
+            Button backButton;
+            Button exitButton;
+            VisualElement exitElement;
+            Button yesButton;
+            Button noButton;
             VisualElement fadePanel;
             GroupBox questionPanel;
-            GroupBox endGamePanel;
             VisualElement sceneLoader;
             Button answerButton01;
             Button answerButton02;
@@ -43,20 +50,113 @@ namespace Otome.GamePlay
             Label _answerText01;
             Label _answerText02;
             Label _answerText03;
+            VisualElement endGameElement;
+            VisualElement endGameWinPanel;
+            Button winOkButton;
+            Button loseOkButton;
+            VisualElement endGameLosePanel;
 
-            void SettingPressed()
-            {
-            
-            }   
-        
             void PausedPressed()
             {
                 _gamePlayManager.isPaused = true;
+                settingElement.style.display = DisplayStyle.Flex;
+                settingElement.pickingMode = PickingMode.Position;
+                settingPanel.style.display = DisplayStyle.Flex;
+                settingButton.style.display = DisplayStyle.None;
+                settingButton.pickingMode = PickingMode.Ignore;
+                backButton.pickingMode = PickingMode.Position;
+                settingElement.pickingMode = PickingMode.Position;
+                exitButton.pickingMode = PickingMode.Position;
             }
 
             void UnPaused()
             {   
                 _gamePlayManager.isPaused = false;
+                settingElement.style.display = DisplayStyle.None;
+                settingElement.pickingMode = PickingMode.Ignore;
+                settingButton.style.display = DisplayStyle.Flex;
+                settingButton.pickingMode = PickingMode.Position;
+                backButton.pickingMode = PickingMode.Ignore;
+                settingElement.pickingMode = PickingMode.Ignore;
+                exitButton.pickingMode = PickingMode.Ignore;
+            }
+
+            void ExitPressed()
+            {
+                settingPanel.style.display = DisplayStyle.None;
+                backButton.pickingMode = PickingMode.Ignore;
+                settingElement.pickingMode = PickingMode.Ignore;
+                exitButton.pickingMode = PickingMode.Ignore;
+                exitElement.style.display = DisplayStyle.Flex;
+                yesButton.pickingMode = PickingMode.Position;
+                noButton.pickingMode = PickingMode.Position;
+            }
+
+            void YesPressed()
+            {
+                GameManager.Instance.LoadScene(GameManager.SceneList.LevelMenu);
+                yesButton.pickingMode = PickingMode.Ignore;
+                noButton.pickingMode = PickingMode.Ignore;
+            }
+
+            void NoPressed()
+            {
+                exitElement.style.display = DisplayStyle.None;
+                yesButton.pickingMode = PickingMode.Ignore;
+                noButton.pickingMode = PickingMode.Ignore;
+                settingElement.style.display = DisplayStyle.Flex;
+                backButton.pickingMode = PickingMode.Position;
+                settingElement.pickingMode = PickingMode.Position;
+                exitButton.pickingMode = PickingMode.Position;
+            }
+
+            public IEnumerator ShowEndGameWin()
+            {
+                endGameElement.pickingMode = PickingMode.Position;
+                endGameWinPanel.style.display = DisplayStyle.None;
+                endGameLosePanel.style.display = DisplayStyle.None;
+                endGameElement.style.opacity = 0;
+                endGameElement.style.display = DisplayStyle.Flex;
+                // Fade Show EndGameElements
+                float timeElapsed = 0;
+                float opacity;
+                while (timeElapsed < 1.5f)
+                {
+                    opacity = Mathf.Lerp(0, 1, timeElapsed / 1.5f);
+                    timeElapsed += Time.deltaTime;
+                    endGameElement.style.opacity = opacity;
+                    yield return null;
+                }
+                endGameElement.style.opacity = 1;
+                endGameWinPanel.style.display = DisplayStyle.Flex;
+                winOkButton.pickingMode = PickingMode.Position;
+            }
+
+            public IEnumerator ShowEndGameLose()
+            {
+                endGameElement.pickingMode = PickingMode.Position;
+                endGameWinPanel.style.display = DisplayStyle.None;
+                endGameLosePanel.style.display = DisplayStyle.None;
+                endGameElement.style.opacity = 0;
+                endGameElement.style.display = DisplayStyle.Flex;
+                // Fade Show EndGameElements
+                float timeElapsed = 0;
+                float opacity;
+                while (timeElapsed < 1.5f)
+                {
+                    opacity = Mathf.Lerp(0, 1, timeElapsed / 1.5f);
+                    timeElapsed += Time.deltaTime;
+                    endGameElement.style.opacity = opacity;
+                    yield return null;
+                }
+                endGameElement.style.opacity = 1;
+                endGameLosePanel.style.display = DisplayStyle.Flex;
+                loseOkButton.pickingMode = PickingMode.Position;
+            }
+
+            void OkPressed()
+            {
+                GameManager.Instance.LoadScene(GameManager.SceneList.LevelMenu);
             }
         
         #endregion
@@ -375,6 +475,11 @@ namespace Otome.GamePlay
 
             void Answer01Clicked()
             {
+                if (_gamePlayManager.isPaused)
+                {
+                    return;
+                }
+                
                 // UI Process
                 StartCoroutine(Answered());
                 _gamePlayManager.choiceChosen = 0;
@@ -393,6 +498,11 @@ namespace Otome.GamePlay
             }
             void Answer02Clicked()
             {
+                if (_gamePlayManager.isPaused)
+                {
+                    return;
+                }
+                
                 // UI Process
                 StartCoroutine(Answered());
                 _gamePlayManager.choiceChosen = 1;
@@ -411,6 +521,11 @@ namespace Otome.GamePlay
             }
             void Answer03Clicked()
             {
+                if (_gamePlayManager.isPaused)
+                {
+                    return;
+                }
+                
                 // UI Process
                 StartCoroutine(Answered());
                 _gamePlayManager.choiceChosen = 2;
@@ -538,12 +653,34 @@ namespace Otome.GamePlay
             answerButton01.pickingMode = PickingMode.Ignore;
             answerButton02.pickingMode = PickingMode.Ignore;
             answerButton03.pickingMode = PickingMode.Ignore;
-
+            endGameWinPanel.style.display = DisplayStyle.None;
+            endGameWinPanel.style.opacity = 0;
+            sceneLoader.style.display = DisplayStyle.Flex;
+            sceneLoader.style.opacity = 1;
+            settingButton.style.display = DisplayStyle.Flex;
+            settingButton.pickingMode = PickingMode.Position;
+            settingElement.style.display = DisplayStyle.None;
+            settingElement.pickingMode = PickingMode.Ignore;
+            settingPanel.style.display = DisplayStyle.None;
+            settingPanel.pickingMode = PickingMode.Ignore;
+            backButton.pickingMode = PickingMode.Ignore;
+            exitButton.pickingMode = PickingMode.Ignore;
+            exitElement.style.display = DisplayStyle.None;
+            yesButton.pickingMode = PickingMode.Ignore;
+            noButton.pickingMode = PickingMode.Ignore;
+            endGameElement.style.display = DisplayStyle.None;
+            winOkButton.pickingMode = PickingMode.Ignore;
+            endGameLosePanel.style.display = DisplayStyle.None;
+            loseOkButton.pickingMode = PickingMode.Ignore;
+            endGameWinPanel.style.display = DisplayStyle.None;
+            endGameWinPanel.style.opacity = 1;
+            endGameLosePanel.style.display = DisplayStyle.None;
+            endGameLosePanel.style.opacity = 1;
+            endGameElement.pickingMode = PickingMode.Ignore;
         }
         void AddFunctionUI()
         {
             _gamePlayManager = FindObjectOfType<GamePlayManager>();
-            settingButton.clicked += SettingPressed;
             settingButton.clicked += PausedPressed;
             bg01.AddManipulator(new Clickable(evt => 
                 StartCoroutine(_gamePlayManager.PlayNextSentence())));
@@ -556,10 +693,13 @@ namespace Otome.GamePlay
             answerButton01.clicked += Answer01Clicked;
             answerButton02.clicked += Answer02Clicked;
             answerButton03.clicked += Answer03Clicked;
-            endGamePanel.style.display = DisplayStyle.None;
-            endGamePanel.style.opacity = 0;
-            sceneLoader.style.display = DisplayStyle.Flex;
-            sceneLoader.style.opacity = 1;
+            settingButton.clicked += PausedPressed;
+            backButton.clicked += UnPaused;
+            yesButton.clicked += YesPressed;
+            noButton.clicked += NoPressed;
+            exitButton.clicked += ExitPressed;
+            winOkButton.clicked += OkPressed;
+            loseOkButton.clicked += OkPressed;
         }
         
         void Start()
@@ -575,6 +715,18 @@ namespace Otome.GamePlay
             personNameText = root.Q<Label>("PersonNameText");
             conversationText = root.Q<Label>("ConversationText");
             settingButton = root.Q<Button>("SettingButton");
+            settingElement = root.Q<VisualElement>("SettingElement");
+            settingPanel = root.Q<VisualElement>("SettingPanel");
+            backButton = root.Q<Button>("BackButton");
+            exitButton = root.Q<Button>("ExitButton");
+            exitElement = root.Q<VisualElement>("ExitElement");
+            yesButton = root.Q<Button>("YesButton");
+            noButton = root.Q<Button>("NoButton");
+            endGameElement = root.Q<VisualElement>("EndGameElement");
+            endGameWinPanel = root.Q<VisualElement>("EndGameWinPanel");
+            endGameLosePanel = root.Q<VisualElement>("EndGameLosePanel");
+            winOkButton = root.Q<Button>("WinOkButton");
+            loseOkButton = root.Q<Button>("LoseOkButton");
             characterSprite = root.Q<VisualElement>("Character");
             fadePanel = root.Q<VisualElement>("FadePanel");
             questionPanel = root.Q<GroupBox>("QuestionPanel");
@@ -584,12 +736,16 @@ namespace Otome.GamePlay
             _answerText01 = root.Q<Label>("Answer01Text");
             _answerText02 = root.Q<Label>("Answer02Text");
             _answerText03 = root.Q<Label>("Answer03Text");
-            endGamePanel = root.Q<GroupBox>("EndGamePanel");
             sceneLoader = root.Q<VisualElement>("SceneLoader");
             
             
             PreparedUI();
             AddFunctionUI();
+        }
+
+        void OnDisable()
+        {
+            
         }
     }
 }

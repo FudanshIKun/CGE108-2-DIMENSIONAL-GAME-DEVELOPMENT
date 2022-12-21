@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dc1bdf5b22935c140b42c3fcaceaf986, type: 3}
+  m_Name: 02_Starting
+  m_EditorClassIdentifier: 
+  id: adb14207-a244-43d9-b957-7343c735acbb
+  Characters:
+  - {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
+  Sentences:
+  - conversationText: Hey! How can I help you?
+    sentenceType: 1
+    questionChoices:
+    - text: Yes, Which way is to xxx University?
+      nextScene: {fileID: 11400000, guid: 2d57b30babb9f3d428bab190862dd668, type: 2}
+      rightAnswer: 1
+      normalAnswer: 0
+      badAnswer: 0
+    - text: No, Thank you.
+      nextScene: {fileID: 11400000, guid: 161cc0f3b68db264ab31342195fcb4b1, type: 2}
+      rightAnswer: 0
+      normalAnswer: 1
+      badAnswer: 0
+    - text: None of your business
+      nextScene: {fileID: 11400000, guid: 49cf09ba4b126cb43a6627ddc5de5c9a, type: 2}
+      rightAnswer: 0
+      normalAnswer: 0
+      badAnswer: 1
+    character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
+    characterTransitionType: 0
+    SpriteEmotion: 0
+    Place: {fileID: 2800000, guid: 73dc6a517cdf1bf448b92ec96ba5a686, type: 3}
+    bgTransitionType: 0
+    newBGSong: {fileID: 0}
+    conversationSFX: {fileID: 0}

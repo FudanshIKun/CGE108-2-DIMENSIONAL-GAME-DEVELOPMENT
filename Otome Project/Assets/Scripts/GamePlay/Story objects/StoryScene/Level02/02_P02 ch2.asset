@@ -10,37 +10,40 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc1bdf5b22935c140b42c3fcaceaf986, type: 3}
-  m_Name: Part02 ch1
+  m_Name: 02_P02 ch2
   m_EditorClassIdentifier: 
-  mainBG: {fileID: 0}
+  id: 
   Characters: []
   Sentences:
-  - conversationText: Yeah, me too.
+  - conversationText: Really? You are going to xxx university right?
     sentenceType: 0
     questionChoices: []
-    character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
+    character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
     characterTransitionType: 0
     SpriteEmotion: 0
     Place: {fileID: 0}
     bgTransitionType: 0
     newBGSong: {fileID: 0}
     conversationSFX: {fileID: 0}
-  - conversationText: Wanna play game with me?
+  - conversationText: Wanna walk with me?
     sentenceType: 1
     questionChoices:
-    - text: Sure!
-      nextScene: {fileID: 11400000, guid: 9c9c1fafae53f274b8686d8d138a3fec, type: 2}
-      rightAnswer: 1
-      normalAnswer: 0
-    - text: I actually have somethings else to do...But fine!
-      nextScene: {fileID: 11400000, guid: 9c9c1fafae53f274b8686d8d138a3fec, type: 2}
+    - text: Ok, Thanks.
+      nextScene: {fileID: 11400000, guid: 211ec605a846d2c4181e647fac29b503, type: 2}
       rightAnswer: 0
       normalAnswer: 1
-    - text: Whatever.
-      nextScene: {fileID: 11400000, guid: 9c9c1fafae53f274b8686d8d138a3fec, type: 2}
+      badAnswer: 0
+    - text: No, I just looking for any convenient store.
+      nextScene: {fileID: 11400000, guid: 211ec605a846d2c4181e647fac29b503, type: 2}
+      rightAnswer: 0
+      normalAnswer: 1
+      badAnswer: 0
+    - text: Could you stop talking? ( Keep walking )
+      nextScene: {fileID: 11400000, guid: 211ec605a846d2c4181e647fac29b503, type: 2}
       rightAnswer: 0
       normalAnswer: 0
-    character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
+      badAnswer: 1
+    character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
     characterTransitionType: 0
     SpriteEmotion: 1
     Place: {fileID: 0}

@@ -10,17 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc1bdf5b22935c140b42c3fcaceaf986, type: 3}
-  m_Name: Part02 ch2
+  m_Name: 01_P02 ch3
   m_EditorClassIdentifier: 
-  mainBG: {fileID: 0}
+  id: 
   Characters: []
   Sentences:
-  - conversationText: That bad huh?
+  - conversationText: Me too. Life is always hard.
     sentenceType: 0
     questionChoices: []
     character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
     characterTransitionType: 0
-    SpriteEmotion: 0
+    SpriteEmotion: 1
     Place: {fileID: 0}
     bgTransitionType: 0
     newBGSong: {fileID: 0}
@@ -32,14 +32,17 @@ MonoBehaviour:
       nextScene: {fileID: 11400000, guid: 9c9c1fafae53f274b8686d8d138a3fec, type: 2}
       rightAnswer: 1
       normalAnswer: 0
+      badAnswer: 0
     - text: I actually have somethings else to do...But fine!
       nextScene: {fileID: 11400000, guid: 9c9c1fafae53f274b8686d8d138a3fec, type: 2}
       rightAnswer: 0
       normalAnswer: 1
+      badAnswer: 0
     - text: Whatever.
       nextScene: {fileID: 11400000, guid: 9c9c1fafae53f274b8686d8d138a3fec, type: 2}
       rightAnswer: 0
       normalAnswer: 0
+      badAnswer: 1
     character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
     characterTransitionType: 0
     SpriteEmotion: 1

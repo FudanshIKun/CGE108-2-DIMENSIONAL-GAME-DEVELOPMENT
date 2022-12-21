@@ -10,18 +10,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dc1bdf5b22935c140b42c3fcaceaf986, type: 3}
-  m_Name: _Ending
+  m_Name: 02_End02
   m_EditorClassIdentifier: 
-  mainBG: {fileID: 0}
+  id: 
   Characters: []
   Sentences:
-  - conversationText: See you tomorrow!
-    sentenceType: 0
+  - conversationText: Ok. See ya!
+    sentenceType: 2
     questionChoices: []
-    character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
+    character: {fileID: 11400000, guid: 9780cc8e49dbf4c4cb60d6a2b5f283be, type: 2}
     characterTransitionType: 0
     SpriteEmotion: 1
-    Place: {fileID: 2800000, guid: 06012c9647f81f448a663b3461bb5b21, type: 3}
+    Place: {fileID: 0}
     bgTransitionType: 0
     newBGSong: {fileID: 0}
     conversationSFX: {fileID: 0}

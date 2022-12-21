@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Otome.Core;
 using UnityEngine;
@@ -11,6 +12,7 @@ namespace Otome.GamePlay
             [Header("GamePlay Setting")]
             private int maxHeart;
             private int currentOwnedHeart = 2;
+            [Range(2,6)] [SerializeField] int winHeartAmount;
             [HideInInspector] public GamePlayState gameplayState = GamePlayState.PLAYING;
             [HideInInspector] public bool currentQuestionHasAnswered;
             [HideInInspector] public bool isPaused;
@@ -36,7 +38,7 @@ namespace Otome.GamePlay
             private GamePlayUI mainUI;
 
         #endregion
-            #region Singleton
+        #region Singleton
 
             public static GamePlayManager Instance { get; private set; }
         
@@ -53,7 +55,8 @@ namespace Otome.GamePlay
         #endregion
         
         #region Data System
-        
+
+            bool GameCompleate;
             public void LoadData(GameData data)
             {
                 
@@ -61,36 +64,63 @@ namespace Otome.GamePlay
 
             public void SaveData(ref GameData data)
             {
-                foreach (Character person in startStory.Characters)
+                if (GameCompleate)
                 {
-                    if (data.ownedHearts.ContainsKey(person.id))
+                    foreach (Character person in startStory.Characters)
                     {
-                        data.ownedHearts.Remove(person.id);
+                        if (data.ownedHearts.ContainsKey(person.id))
+                        {
+                            data.ownedHearts.Remove(person.id);
+                        }
+                        if (currentOwnedHeart < 0)
+                        {
+                            data.ownedHearts.Add(person.id, 0);
+                        }
+                        else
+                        {
+                            data.ownedHearts.Add(person.id, currentOwnedHeart);
+                        }
                     }
-                    data.ownedHearts.Add(person.id, currentOwnedHeart);
-                }
-                currentSceneStory.Characters[0].heartOwned = currentOwnedHeart;
+                    startStory.Characters[0].heartOwned = currentOwnedHeart;
 
-                if (data.playedLevels.ContainsKey(startStory.id))
-                {
-                    Debug.Log("Error: the current scene has already been played");
-                    return;
+                    if (data.playedLevels.ContainsKey(
+                            GameManager.Instance.currentScene.ToString()))
+                    {
+                        data.playedLevels.Remove(
+                            GameManager.Instance.currentScene.ToString());
+                    }
+                    data.playedLevels.Add(
+                        GameManager.Instance.currentScene.ToString(), true);
+
+                    if (currentOwnedHeart >= winHeartAmount)
+                    {
+                        if (data.passedLevels.ContainsKey(
+                                GameManager.Instance.currentScene.ToString()))
+                        {
+                            data.passedLevels.Remove(
+                                GameManager.Instance.currentScene.ToString());
+                        }
+                        data.passedLevels.Add(
+                            GameManager.Instance.currentScene.ToString(), true);
+                    }
+                    
                 }
-                data.playedLevels.Add(startStory.id, true);
             }
 
             public void CheckCollectChoice()
             {
-                if (currentSceneStory.Sentences[sentenceIndex].questionChoices[choiceChosen].rightAnswer)
+                if (currentSceneStory.Sentences[sentenceIndex].
+                    questionChoices[choiceChosen].rightAnswer)
                 {
                     if (currentOwnedHeart < maxHeart)
                     {
                         currentOwnedHeart++;
                     }
                 }
-                else if (currentSceneStory.Sentences[sentenceIndex].questionChoices[choiceChosen].badAnswer)
+                else if (currentSceneStory.Sentences[sentenceIndex].
+                         questionChoices[choiceChosen].badAnswer)
                 {
-                    currentOwnedHeart--;
+                    currentOwnedHeart = currentOwnedHeart - 1;
                 }
             }
 
@@ -126,6 +156,18 @@ namespace Otome.GamePlay
                 // ReSharper disable Unity.PerformanceAnalysis
                 public IEnumerator PlayNextSentence()
                 {
+                    if (gameplayState == GamePlayState.ENDED)
+                    {
+                        Debug.Log("Game has already end");
+                        yield break;
+                    }
+                    
+                    if (isPaused)
+                    {
+                        Debug.Log("Game is paused");
+                        yield break;
+                    }
+                    
                     if (nextSceneStory != null)
                     {
                         Debug.Log("Change Story Path");
@@ -161,15 +203,7 @@ namespace Otome.GamePlay
                             yield break;
                         }
                     }
-                    
-                    if (currentSceneStory.Sentences[questionIndex].sentenceType ==
-                        StoryScene.Sentence.SentenceType.EndSentence)
-                    {
-                        Debug.Log("EndStage");
-                        StartCoroutine(EndStage());
-                        yield break;
-                    }
-            
+
                     // Check if the sentence set in new location location
                     if (currentSceneStory.Sentences[++sentenceIndex].Place != currenntPlace && 
                         currentSceneStory.Sentences[sentenceIndex].Place != null)
@@ -198,7 +232,8 @@ namespace Otome.GamePlay
                                 currentSceneStory.Sentences[sentenceIndex].bgTransitionType));
                 
                             // Change character sprite by the emotion setting in sentence;
-                            mainUI.ChangeSprite(currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
+                            mainUI.ChangeSprite(
+                                currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
                                 currentSceneStory.Sentences[sentenceIndex].character);
                 
                             // FadeShow Sprite
@@ -223,7 +258,8 @@ namespace Otome.GamePlay
                         
                                 // Start typing conversation;
                                 yield return StartCoroutine(
-                                mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                                mainUI.TypeText(
+                                    currentSceneStory.Sentences[sentenceIndex].conversationText));
                         
                                 // Start asking question;
                                 yield return StartCoroutine(mainUI.AskQuestion(
@@ -234,20 +270,24 @@ namespace Otome.GamePlay
                     
                             // Check if conversationType is Normal
                             else if (currentSceneStory.Sentences[sentenceIndex].sentenceType == 
-                                StoryScene.Sentence.SentenceType.NormalConversation)
+                                StoryScene.Sentence.SentenceType.NormalConversation ||
+                                currentSceneStory.Sentences[sentenceIndex].sentenceType == 
+                                StoryScene.Sentence.SentenceType.EndSentence)
                             {
                                 //Debug.Log(sentenceIndex + " has sentence Type of Normal");
                         
                                 // Start typing conversation;
                                 yield return StartCoroutine(
-                                mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                                mainUI.TypeText(
+                                    currentSceneStory.Sentences[sentenceIndex].conversationText));
                         
                                 questionIndex = sentenceIndex;
                             }
                         }
                 
                         // If character TranstionType is Normal
-                        else if (currentSceneStory.Sentences[sentenceIndex].characterTransitionType ==
+                        else if (
+                            currentSceneStory.Sentences[sentenceIndex].characterTransitionType ==
                             StoryScene.Sentence.CharacterTransitionType.Normal)
                         {   
                             //Debug.Log(sentenceIndex + " has characterTransition Type of Normal");
@@ -258,12 +298,14 @@ namespace Otome.GamePlay
                                 currentSceneStory.Sentences[sentenceIndex].bgTransitionType));
                     
                             // Change component's color of the BottomBar;
-                            mainUI.FadeChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, 
-                            currentSceneStory.Sentences[sentenceIndex].character.characterColor);
+                            mainUI.FadeChangeSpeaker(
+                                currentSceneStory.Sentences[sentenceIndex].character.characterName, 
+                                currentSceneStory.Sentences[sentenceIndex].character.characterColor);
                     
                             // Change Sprite Emotion;
-                            mainUI.ChangeSprite(currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
-                            currentSceneStory.Sentences[sentenceIndex].character);
+                            mainUI.ChangeSprite(
+                                currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
+                                currentSceneStory.Sentences[sentenceIndex].character);
                     
                             // Check if conversationType is Question;
                             if (currentSceneStory.Sentences[sentenceIndex].sentenceType ==
@@ -273,7 +315,8 @@ namespace Otome.GamePlay
                         
                                 // Start typing conversation;
                                 yield return StartCoroutine(
-                                mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                                mainUI.TypeText(
+                                    currentSceneStory.Sentences[sentenceIndex].conversationText));
                         
                                 // Start asking question;
                                 yield return StartCoroutine(mainUI.AskQuestion(
@@ -284,13 +327,16 @@ namespace Otome.GamePlay
                     
                             // Check if conversationType is Normal
                             else if (currentSceneStory.Sentences[sentenceIndex].sentenceType == 
-                                 StoryScene.Sentence.SentenceType.NormalConversation)
+                                 StoryScene.Sentence.SentenceType.NormalConversation ||
+                                 currentSceneStory.Sentences[sentenceIndex].sentenceType == 
+                                 StoryScene.Sentence.SentenceType.EndSentence)
                             {
                                 //Debug.Log(sentenceIndex + " has sentence Type of Normal");
                         
                                 // Start typing conversation;
                                 yield return StartCoroutine(
-                                mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                                mainUI.TypeText(
+                                    currentSceneStory.Sentences[sentenceIndex].conversationText));
                         
                                 questionIndex = sentenceIndex;
                             }
@@ -320,8 +366,9 @@ namespace Otome.GamePlay
                             yield return StartCoroutine(mainUI.FadeHideBottomBar());
 
                             // Change character sprite by the emotion setting in sentence;
-                            mainUI.ChangeSprite(currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
-                            currentSceneStory.Sentences[sentenceIndex].character);
+                            mainUI.ChangeSprite(
+                                currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
+                                currentSceneStory.Sentences[sentenceIndex].character);
                 
                             // FadeShow Sprite
                             yield return StartCoroutine(mainUI.FadeShowSprite());
@@ -331,8 +378,8 @@ namespace Otome.GamePlay
 
                             // FadeChange Bottombar Color if the new sentence has the new character
                             yield return StartCoroutine( mainUI.FadeChangeSpeaker(
-                            currentSceneStory.Sentences[sentenceIndex].character.characterName, 
-                            currentSceneStory.Sentences[sentenceIndex].character.characterColor));
+                                currentSceneStory.Sentences[sentenceIndex].character.characterName, 
+                                currentSceneStory.Sentences[sentenceIndex].character.characterColor));
 
                             // Check if conversationType is Question;
                             if (currentSceneStory.Sentences[sentenceIndex].sentenceType ==
@@ -342,7 +389,8 @@ namespace Otome.GamePlay
                         
                                 // Start typing conversation;
                                 yield return StartCoroutine(
-                                mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                                mainUI.TypeText(
+                                    currentSceneStory.Sentences[sentenceIndex].conversationText));
                         
                                 // Start asking question;
                                 yield return StartCoroutine(mainUI.AskQuestion(
@@ -353,13 +401,16 @@ namespace Otome.GamePlay
                     
                             // Check if conversationType is Normal
                             else if (currentSceneStory.Sentences[sentenceIndex].sentenceType == 
-                            StoryScene.Sentence.SentenceType.NormalConversation)
+                            StoryScene.Sentence.SentenceType.NormalConversation ||
+                            currentSceneStory.Sentences[sentenceIndex].sentenceType == 
+                            StoryScene.Sentence.SentenceType.EndSentence)
                             {
                                 //Debug.Log(sentenceIndex + " has sentence Type of Normal");
                         
                                 // Start typing conversation;
                                 yield return StartCoroutine(
-                                mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                                mainUI.TypeText(
+                                    currentSceneStory.Sentences[sentenceIndex].conversationText));
                         
                                 questionIndex = sentenceIndex;
                             }
@@ -367,18 +418,21 @@ namespace Otome.GamePlay
                         }
                 
                         // If character TranstionType is Normal
-                        else if (currentSceneStory.Sentences[sentenceIndex].characterTransitionType ==
-                          StoryScene.Sentence.CharacterTransitionType.Normal)
+                        else if (
+                            currentSceneStory.Sentences[sentenceIndex].characterTransitionType ==
+                            StoryScene.Sentence.CharacterTransitionType.Normal)
                         {
                             //Debug.Log(sentenceIndex + " has characterTransition Type of Normal");
                     
                             // Change component's color of the BottomBar;
-                            mainUI.FadeChangeSpeaker(currentSceneStory.Sentences[sentenceIndex].character.characterName, 
+                            mainUI.FadeChangeSpeaker(
+                                currentSceneStory.Sentences[sentenceIndex].character.characterName, 
                             currentSceneStory.Sentences[sentenceIndex].character.characterColor);
                     
                             // Change Sprite Emotion;
-                            mainUI.ChangeSprite(currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
-                            currentSceneStory.Sentences[sentenceIndex].character);
+                            mainUI.ChangeSprite(
+                                currentSceneStory.Sentences[sentenceIndex].SpriteEmotion,
+                                currentSceneStory.Sentences[sentenceIndex].character);
                     
                             // Check if conversationType is Question;
                             if (currentSceneStory.Sentences[sentenceIndex].sentenceType ==
@@ -388,34 +442,45 @@ namespace Otome.GamePlay
                         
                                 // Start typing conversation;
                                 yield return StartCoroutine(
-                                mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                                mainUI.TypeText(
+                                    currentSceneStory.Sentences[sentenceIndex].conversationText));
                         
                                 // Start asking question;
-                                yield return StartCoroutine(mainUI.AskQuestion(
-                                currentSceneStory.Sentences[sentenceIndex].questionChoices));
+                                yield return StartCoroutine(
+                                    mainUI.AskQuestion(
+                                        currentSceneStory.Sentences[sentenceIndex].questionChoices));
                         
                                 questionIndex = sentenceIndex;
                             }
                     
                             // Check if conversationType is Normal
                             else if (currentSceneStory.Sentences[sentenceIndex].sentenceType == 
-                             StoryScene.Sentence.SentenceType.NormalConversation)
+                             StoryScene.Sentence.SentenceType.NormalConversation ||
+                             currentSceneStory.Sentences[sentenceIndex].sentenceType == 
+                             StoryScene.Sentence.SentenceType.EndSentence)
                             {
                                 //Debug.Log(sentenceIndex + " has sentence Type of Normal");
                         
                                 // Start typing conversation;
                                 yield return StartCoroutine(
-                                mainUI.TypeText(currentSceneStory.Sentences[sentenceIndex].conversationText));
+                                mainUI.TypeText(
+                                    currentSceneStory.Sentences[sentenceIndex].conversationText));
                         
                                 questionIndex = sentenceIndex;
                             }
                         }
                     }
-                    // delay before player can get to the next conversation;
-                    yield return new WaitForSeconds(NextConversationDelay);
-            
+
                     // update the conversation state;
                     conversationState = ConversationState.COMPLEATED;
+                    
+                    if (currentSceneStory.Sentences[sentenceIndex].sentenceType ==
+                        StoryScene.Sentence.SentenceType.EndSentence)
+                    {
+                        Debug.Log("EndStage");
+                        yield return new WaitForSeconds(1.5f);
+                        StartCoroutine(EndStage());
+                    }
                 }
 
                 public void SwitchScene()
@@ -426,6 +491,8 @@ namespace Otome.GamePlay
         
                 private IEnumerator StartStage()
                 {
+                    currentQuestionHasAnswered = true;
+                    
                     // Check if the next sentence change place;
                     currenntPlace = currentSceneStory.Sentences[0].Place;
                     mainUI.SetBackground(currentSceneStory.Sentences[0].Place, 1);
@@ -455,6 +522,15 @@ namespace Otome.GamePlay
                 private IEnumerator EndStage()
                 {
                     gameplayState = GamePlayState.ENDED;
+                    GameCompleate = true;
+                    if (currentOwnedHeart >= winHeartAmount)
+                    {
+                        StartCoroutine(mainUI.ShowEndGameWin());
+                    }
+                    else
+                    {
+                        StartCoroutine(mainUI.ShowEndGameLose());
+                    }
                     yield return null;
                 }
         
@@ -485,6 +561,12 @@ namespace Otome.GamePlay
 
             // Start Stage
             StartCoroutine(StartStage());
+        }
+
+        private void Update()
+        {
+            Debug.Log("Game compleated : " + GameCompleate);
+            Debug.Log("Score : " + currentOwnedHeart);
         }
     }
 }

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -19,6 +20,8 @@ namespace Otome.Core
                 }
                 else
                 {
+                    Instance.currentScene = currentScene;
+                    Instance.gameState = gameState;
                     Destroy(gameObject);
                 }
             }
@@ -39,7 +42,7 @@ namespace Otome.Core
 
             public void LoadScene(SceneList targetScene)
             {
-                
+                SceneManager.LoadSceneAsync(targetScene.ToString());
             }
 
         #endregion
@@ -62,7 +65,7 @@ namespace Otome.Core
 
         void Update()
         {
-            Debug.Log(currentScene);
+            Debug.Log("CurrenScene : " + currentScene);
         }
     }
 }
