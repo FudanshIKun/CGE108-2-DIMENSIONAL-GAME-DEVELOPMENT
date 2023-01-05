@@ -16,7 +16,7 @@ MonoBehaviour:
   Characters:
   - {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
   Sentences:
-  - conversationText: Hi, I'm Owen. Nice to meet you!
+  - conversationText: Hi, I'm owen. Nice to meet you!
     sentenceType: 0
     questionChoices: []
     character: {fileID: 11400000, guid: c2eef1eb1e584fd4e98f40b7618eab34, type: 2}
