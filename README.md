@@ -9,3 +9,4 @@ https://github.com/FudanshIKun/CGE108-2-DIMENSIONAL-GAME-DEVELOPMENT/assets/7801
 - Dialogue setup with ScriptableObject
 - Multiple Choices, Multiple Paths
 
+https://github.com/FudanshIKun/CGE108-2-DIMENSIONAL-GAME-DEVELOPMENT/assets/78013257/1a335f8d-cccf-4940-9bca-ecba4c199e22
